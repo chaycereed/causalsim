@@ -1,0 +1,23 @@
+# R build artifacts
+*.Rcheck/
+*.tar.gz
+*.zip
+
+# Installed package files
+/inst/doc/
+
+# Vignette intermediates
+/doc/
+/Meta/
+
+# RStudio
+.Rproj.user/
+*.Rproj
+
+# R session
+.RData
+.Rhistory
+.Ruserdata
+
+# OS
+.DS_Store

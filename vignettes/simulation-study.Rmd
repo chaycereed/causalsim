@@ -1,0 +1,190 @@
+---
+title: "A Complete Simulation Study with causalsim"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{A Complete Simulation Study with causalsim}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Overview
+
+Evaluating causal estimators requires knowing the answer. `causalsim` gives you
+that by making the data-generating process explicit: you specify the structural
+model, the package simulates data from it, and you measure how well any estimator
+recovers the truth you specified.
+
+This vignette walks through a complete simulation study:
+
+1. Define a DGP with one confounder and a known treatment effect
+2. Inspect a draw from it to confirm the structural model
+3. Compare a naive (unadjusted) estimator to OLS adjustment
+4. Vary sample size with `causalsim_grid()` to study finite-sample precision
+5. Vary confounding strength to see where naive estimation breaks down
+
+```{r library}
+library(causalsim)
+```
+
+## Step 1: Define the DGP
+
+The structural model for this study is:
+
+$$
+W \sim N(0,1), \quad
+A \mid W \sim \text{Bernoulli}\!\left(\text{logistic}(0.5\,W)\right), \quad
+Y = 2A + 0.5W + \varepsilon, \quad
+\varepsilon \sim N(0,1)
+$$
+
+In `causalsim_dgp()` terms: one standard-normal confounder, a constant effect of
+2, moderate propensity confounding, and a moderate baseline shift.
+
+```{r dgp}
+dgp <- causalsim_dgp(
+  n             = 500,
+  n_confounders = 1,
+  effect        = 2,
+  propensity    = "moderate",
+  baseline      = "moderate"
+)
+dgp
+```
+
+The true ATE is exact because `effect` is a scalar — no Monte Carlo approximation
+needed.
+
+## Step 2: Inspect a Draw
+
+`causalsim_draw()` simulates one dataset. The columns `.tau` and `.p` are the
+individual causal effect and propensity score — diagnostic metadata not available
+in real observational data.
+
+```{r draw}
+dat <- causalsim_draw(dgp, seed = 1L)
+head(dat)
+```
+
+With moderate confounding, the treated and control groups differ on the
+pre-treatment covariate:
+
+```{r confounding-check}
+aggregate(W ~ A, data = dat, FUN = mean)
+```
+
+That difference is exactly what makes naive regression biased — any estimator
+that ignores `W` will confuse baseline variation with treatment effect.
+
+## Step 3: Define Estimators
+
+Both estimators return a named numeric vector with `estimate`, `ci_lower`, and
+`ci_upper`. The `ci_*` fields enable coverage and power metrics in addition to
+bias and RMSE.
+
+```{r estimators}
+# Naive: regresses Y on A only — omits the confounder
+naive_est <- function(data) {
+  fit <- lm(Y ~ A, data = data)
+  est <- coef(fit)[["A"]]
+  se  <- sqrt(vcov(fit)["A", "A"])
+  c(estimate = est, ci_lower = est - 1.96 * se, ci_upper = est + 1.96 * se)
+}
+
+# OLS: adjusts for the observed confounder W
+ols_est <- function(data) {
+  fit <- lm(Y ~ A + W, data = data)
+  est <- coef(fit)[["A"]]
+  se  <- sqrt(vcov(fit)["A", "A"])
+  c(estimate = est, ci_lower = est - 1.96 * se, ci_upper = est + 1.96 * se)
+}
+```
+
+## Step 4: Evaluate Each Estimator
+
+`causalsim_eval()` runs `reps` independent replications and returns bias, RMSE,
+coverage, and power with Monte Carlo standard errors.
+
+```{r eval-naive}
+eval_naive <- causalsim_eval(dgp, naive_est, reps = 300L, seed = 1L)
+eval_naive
+```
+
+```{r eval-ols}
+eval_ols <- causalsim_eval(dgp, ols_est, reps = 300L, seed = 1L)
+eval_ols
+```
+
+The naive estimator's bias is substantial: treatment is positively correlated
+with $W$, which also raises $Y$ through the baseline, so the unadjusted
+coefficient absorbs part of that association. OLS eliminates the bias by
+conditioning on $W$. Coverage for the naive estimator is well below the nominal
+95 % because confidence intervals are centered on the wrong value.
+
+## Step 5: Vary Sample Size with `causalsim_grid()`
+
+`causalsim_grid()` evaluates an estimator over the Cartesian product of the
+supplied parameter values. Here we vary `n` across four levels to track how the
+OLS estimator's precision improves with more data.
+
+```{r grid-n}
+grid_n <- causalsim_grid(
+  dgp       = dgp,
+  estimator = ols_est,
+  vary      = list(n = c(100L, 250L, 500L, 1000L)),
+  reps      = 300L,
+  metrics   = c("bias", "rmse"),
+  seed      = 1L
+)
+grid_n
+```
+
+RMSE roughly halves as $n$ quadruples — consistent with $\sqrt{n}$-rate
+convergence for OLS in a correctly specified model. Bias stays near zero
+at every sample size.
+
+## Step 6: Vary Confounding Strength
+
+We can vary the propensity string to study how bias grows as confounding
+increases. Because `causalsim_grid()` accepts one estimator at a time, we run
+it separately for each and combine the results.
+
+```{r grid-confounding}
+conf_levels <- list(propensity = c("low", "moderate", "high"))
+
+grid_naive <- causalsim_grid(dgp, naive_est,
+                              vary    = conf_levels,
+                              reps    = 300L,
+                              metrics = "bias",
+                              seed    = 1L)
+
+grid_ols   <- causalsim_grid(dgp, ols_est,
+                              vary    = conf_levels,
+                              reps    = 300L,
+                              metrics = "bias",
+                              seed    = 1L)
+
+comparison <- rbind(
+  cbind(estimator = "naive", grid_naive$results),
+  cbind(estimator = "ols",   grid_ols$results)
+)
+comparison <- comparison[order(comparison$propensity, comparison$estimator), ]
+rownames(comparison) <- NULL
+comparison
+```
+
+Naive bias grows proportionally with confounding strength. OLS remains near zero
+across all three levels because $W$ is observed and included in the model.
+
+---
+
+This three-step workflow — define, evaluate, grid — scales naturally to more
+complex settings: heterogeneous effects, multiple confounders, or estimators that
+require a different adjustment strategy. See `?causalsim_dgp` for the full
+covariate specification API and `?covar` for defining non-normal covariates.
