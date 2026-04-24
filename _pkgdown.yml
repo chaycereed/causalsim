@@ -1,0 +1,36 @@
+url: https://chaycereed.github.io/causalsim/
+
+template:
+  bootstrap: 5
+
+home:
+  title: causalsim
+  description: Causal estimator benchmarking under known ground truth
+
+navbar:
+  structure:
+    left:  [intro, reference, articles]
+    right: [github]
+  components:
+    github:
+      icon: fab fa-github
+      href: https://github.com/chaycereed/causalsim
+      aria-label: GitHub
+
+reference:
+  - title: Data Generating Processes
+    desc: Define and draw from causal DGPs with known ground truth.
+    contents:
+      - causalsim_dgp
+      - covar
+      - causalsim_draw
+  - title: Evaluation
+    desc: Measure estimator performance against the known ground truth.
+    contents:
+      - causalsim_eval
+      - causalsim_grid
+
+articles:
+  - title: Getting Started
+    contents:
+      - simulation-study
