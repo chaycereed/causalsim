@@ -1,6 +1,9 @@
 ---
 title: "A Complete Simulation Study with causalsim"
-output: rmarkdown::html_vignette
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
 vignette: >
   %\VignetteIndexEntry{A Complete Simulation Study with causalsim}
   %\VignetteEngine{knitr::rmarkdown}
@@ -9,9 +12,53 @@ vignette: >
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
+  collapse   = TRUE,
+  comment    = "#>",
+  fig.width  = 7,
+  fig.height = 4.5,
+  out.width  = "100%"
 )
+```
+
+```{css, echo = FALSE}
+.callout {
+  background-color: #f0f4f8;
+  border-left: 4px solid #3a7ebf;
+  padding: 0.75em 1em;
+  margin: 1.25em 0;
+  border-radius: 0 4px 4px 0;
+}
+
+.callout-warn {
+  background-color: #fff8e1;
+  border-left: 4px solid #f0a500;
+  padding: 0.75em 1em;
+  margin: 1.25em 0;
+  border-radius: 0 4px 4px 0;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9em;
+  margin: 1em 0;
+}
+
+th {
+  background-color: #3a7ebf;
+  color: white;
+  padding: 0.5em 0.75em;
+  text-align: left;
+}
+
+td {
+  padding: 0.4em 0.75em;
+  border-bottom: 1px solid #dde;
+}
+
+tr:nth-child(even) td {
+  background-color: #f5f7fa;
+}
 ```
 
 ## Overview
@@ -21,17 +68,20 @@ that by making the data-generating process explicit: you specify the structural
 model, the package simulates data from it, and you measure how well any estimator
 recovers the truth you specified.
 
-This vignette walks through a complete simulation study:
+### What this vignette covers
 
-1. Define a DGP with one confounder and a known treatment effect
-2. Inspect a draw from it to confirm the structural model
-3. Compare a naive (unadjusted) estimator to OLS adjustment
-4. Vary sample size with `causalsim_grid()` to study finite-sample precision
-5. Vary confounding strength to see where naive estimation breaks down
+| Step | Function | What it does |
+|---|---|---|
+| 1 | `causalsim_dgp()` | Define the structural model and true ATE |
+| 2 | `causalsim_draw()` | Simulate one dataset and inspect it |
+| 3 | `causalsim_eval()` | Measure estimator performance over many replications |
+| 4 | `causalsim_grid()` | Sweep over sample sizes and confounding levels |
 
 ```{r library}
 library(causalsim)
 ```
+
+---
 
 ## Step 1: Define the DGP
 
@@ -45,7 +95,8 @@ Y = 2A + 0.5W + \varepsilon, \quad
 $$
 
 In `causalsim_dgp()` terms: one standard-normal confounder, a constant effect of
-2, moderate propensity confounding, and a moderate baseline shift.
+2, moderate propensity confounding (logistic coefficient 0.5), and a moderate
+baseline shift.
 
 ```{r dgp}
 dgp <- causalsim_dgp(
@@ -58,14 +109,19 @@ dgp <- causalsim_dgp(
 dgp
 ```
 
-The true ATE is exact because `effect` is a scalar — no Monte Carlo approximation
-needed.
+<div class="callout">
+The true ATE is exact when `effect` is a scalar — no Monte Carlo approximation
+is needed. For function-valued effects, `causalsim_dgp()` approximates the ATE
+via 10,000 Monte Carlo draws at construction time.
+</div>
+
+---
 
 ## Step 2: Inspect a Draw
 
-`causalsim_draw()` simulates one dataset. The columns `.tau` and `.p` are the
-individual causal effect and propensity score — diagnostic metadata not available
-in real observational data.
+`causalsim_draw()` simulates one dataset from the DGP. The columns `.tau` and
+`.p` are the individual causal effect and propensity score — diagnostic metadata
+that is not available in real observational data.
 
 ```{r draw}
 dat <- causalsim_draw(dgp, seed = 1L)
@@ -79,14 +135,19 @@ pre-treatment covariate:
 aggregate(W ~ A, data = dat, FUN = mean)
 ```
 
-That difference is exactly what makes naive regression biased — any estimator
-that ignores `W` will confuse baseline variation with treatment effect.
+<div class="callout-warn">
+That difference is exactly what makes naive regression biased. Any estimator
+that omits `W` will absorb part of its association with `Y` into the treatment
+coefficient.
+</div>
+
+---
 
 ## Step 3: Define Estimators
 
-Both estimators return a named numeric vector with `estimate`, `ci_lower`, and
-`ci_upper`. The `ci_*` fields enable coverage and power metrics in addition to
-bias and RMSE.
+An estimator is any function that accepts the data frame returned by
+`causalsim_draw()` and returns a named numeric vector. The `ci_lower` and
+`ci_upper` fields are optional but enable coverage and power metrics.
 
 ```{r estimators}
 # Naive: regresses Y on A only — omits the confounder
@@ -106,10 +167,26 @@ ols_est <- function(data) {
 }
 ```
 
+Named lists are also accepted, so the following is equivalent:
+
+```{r estimator-list, eval = FALSE}
+ols_est <- function(data) {
+  fit <- lm(Y ~ A + W, data = data)
+  ci  <- confint(fit)["A", ]
+  list(
+    estimate = coef(fit)["A"],
+    ci_lower = ci[1],
+    ci_upper = ci[2]
+  )
+}
+```
+
+---
+
 ## Step 4: Evaluate Each Estimator
 
-`causalsim_eval()` runs `reps` independent replications and returns bias, RMSE,
-coverage, and power with Monte Carlo standard errors.
+`causalsim_eval()` runs `reps` independent replications and returns a tidy
+summary of bias, RMSE, coverage, and power with Monte Carlo standard errors.
 
 ```{r eval-naive}
 eval_naive <- causalsim_eval(dgp, naive_est, reps = 300L, seed = 1L)
@@ -124,14 +201,28 @@ eval_ols
 The naive estimator's bias is substantial: treatment is positively correlated
 with $W$, which also raises $Y$ through the baseline, so the unadjusted
 coefficient absorbs part of that association. OLS eliminates the bias by
-conditioning on $W$. Coverage for the naive estimator is well below the nominal
-95 % because confidence intervals are centered on the wrong value.
+conditioning on $W$. Coverage for the naive estimator falls well below the
+nominal 95% because the confidence intervals are centered on the wrong value.
+
+`summary()` adds the full distribution of per-replication estimates, and
+`plot()` shows it as a histogram:
+
+```{r summary-ols}
+summary(eval_ols)
+```
+
+```{r plot-ols, fig.cap = "Distribution of OLS estimates over 300 replications. Solid line: true ATE. Dashed line: mean estimate."}
+plot(eval_ols)
+```
+
+---
 
 ## Step 5: Vary Sample Size with `causalsim_grid()`
 
 `causalsim_grid()` evaluates an estimator over the Cartesian product of the
-supplied parameter values. Here we vary `n` across four levels to track how the
-OLS estimator's precision improves with more data.
+supplied parameter values, returning a tidy data frame of metrics for each cell.
+Here we vary `n` across four levels to track how the OLS estimator's precision
+improves with more data.
 
 ```{r grid-n}
 grid_n <- causalsim_grid(
@@ -146,14 +237,16 @@ grid_n
 ```
 
 RMSE roughly halves as $n$ quadruples — consistent with $\sqrt{n}$-rate
-convergence for OLS in a correctly specified model. Bias stays near zero
-at every sample size.
+convergence for OLS in a correctly specified model. Bias stays near zero at
+every sample size.
+
+---
 
 ## Step 6: Vary Confounding Strength
 
-We can vary the propensity string to study how bias grows as confounding
-increases. Because `causalsim_grid()` accepts one estimator at a time, we run
-it separately for each and combine the results.
+Varying the `propensity` preset shows how bias scales with confounding. Because
+`causalsim_grid()` accepts one estimator at a time, we run it separately and
+combine the results.
 
 ```{r grid-confounding}
 conf_levels <- list(propensity = c("low", "moderate", "high"))
@@ -184,7 +277,24 @@ across all three levels because $W$ is observed and included in the model.
 
 ---
 
-This three-step workflow — define, evaluate, grid — scales naturally to more
-complex settings: heterogeneous effects, multiple confounders, or estimators that
-require a different adjustment strategy. See `?causalsim_dgp` for the full
-covariate specification API and `?covar` for defining non-normal covariates.
+## Where to go next
+
+This workflow — define, evaluate, grid — scales to more complex settings. A few
+directions:
+
+| Goal | How |
+|---|---|
+| Heterogeneous effects | Pass a function to `effect` in `causalsim_dgp()` |
+| Non-normal covariates | Use `covar("binary")` or `covar("uniform")` in `covariates` |
+| Multiple confounders | Set `n_confounders = 3` or pass named `covariates` |
+| Custom covariate structure | Mix `n_confounders` with explicit `covariates = list(...)` |
+
+See `?causalsim_dgp` and `?covar` for the full API.
+
+---
+
+## Session info
+
+```{r session-info}
+sessionInfo()
+```
