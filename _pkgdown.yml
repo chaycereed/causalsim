@@ -49,6 +49,8 @@ reference:
     desc: "Measure estimator performance against the known ground truth."
     contents:
       - causalsim_eval
+      - summary.causalsim_eval
+      - plot.causalsim_eval
       - causalsim_grid
 
 footer:
