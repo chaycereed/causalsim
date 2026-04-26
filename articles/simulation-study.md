@@ -7,19 +7,20 @@ gives you that by making the data-generating process explicit: you
 specify the structural model, the package simulates data from it, and
 you measure how well any estimator recovers the truth you specified.
 
-This vignette walks through a complete simulation study:
+### What this vignette covers
 
-1.  Define a DGP with one confounder and a known treatment effect
-2.  Inspect a draw from it to confirm the structural model
-3.  Compare a naive (unadjusted) estimator to OLS adjustment
-4.  Vary sample size with
-    [`causalsim_grid()`](https://chaycereed.github.io/causalsim/reference/causalsim_grid.md)
-    to study finite-sample precision
-5.  Vary confounding strength to see where naive estimation breaks down
+| Step | Function                                                                                 | What it does                                         |
+|------|------------------------------------------------------------------------------------------|------------------------------------------------------|
+| 1    | [`causalsim_dgp()`](https://chaycereed.github.io/causalsim/reference/causalsim_dgp.md)   | Define the structural model and true ATE             |
+| 2    | [`causalsim_draw()`](https://chaycereed.github.io/causalsim/reference/causalsim_draw.md) | Simulate one dataset and inspect it                  |
+| 3    | [`causalsim_eval()`](https://chaycereed.github.io/causalsim/reference/causalsim_eval.md) | Measure estimator performance over many replications |
+| 4    | [`causalsim_grid()`](https://chaycereed.github.io/causalsim/reference/causalsim_grid.md) | Sweep over sample sizes and confounding levels       |
 
 ``` r
 library(causalsim)
 ```
+
+------------------------------------------------------------------------
 
 ## Step 1: Define the DGP
 
@@ -30,7 +31,8 @@ $$W \sim N(0,1),\quad A \mid W \sim \text{Bernoulli}\!\left( \text{logistic}(0.5
 In
 [`causalsim_dgp()`](https://chaycereed.github.io/causalsim/reference/causalsim_dgp.md)
 terms: one standard-normal confounder, a constant effect of 2, moderate
-propensity confounding, and a moderate baseline shift.
+propensity confounding (logistic coefficient 0.5), and a moderate
+baseline shift.
 
 ``` r
 dgp <- causalsim_dgp(
@@ -50,15 +52,19 @@ dgp
 #>     W       normal  [confounder]
 ```
 
-The true ATE is exact because `effect` is a scalar — no Monte Carlo
-approximation needed.
+The true ATE is exact when `effect` is a scalar — no Monte Carlo
+approximation is needed. For function-valued effects,
+[`causalsim_dgp()`](https://chaycereed.github.io/causalsim/reference/causalsim_dgp.md)
+approximates the ATE via 10,000 Monte Carlo draws at construction time.
+
+------------------------------------------------------------------------
 
 ## Step 2: Inspect a Draw
 
 [`causalsim_draw()`](https://chaycereed.github.io/causalsim/reference/causalsim_draw.md)
-simulates one dataset. The columns `.tau` and `.p` are the individual
-causal effect and propensity score — diagnostic metadata not available
-in real observational data.
+simulates one dataset from the DGP. The columns `.tau` and `.p` are the
+individual causal effect and propensity score — diagnostic metadata that
+is not available in real observational data.
 
 ``` r
 dat <- causalsim_draw(dgp, seed = 1L)
@@ -82,15 +88,18 @@ aggregate(W ~ A, data = dat, FUN = mean)
 #> 2 1  0.3162376
 ```
 
-That difference is exactly what makes naive regression biased — any
-estimator that ignores `W` will confuse baseline variation with
-treatment effect.
+That difference is exactly what makes naive regression biased. Any
+estimator that omits `W` will absorb part of its association with `Y`
+into the treatment coefficient.
+
+------------------------------------------------------------------------
 
 ## Step 3: Define Estimators
 
-Both estimators return a named numeric vector with `estimate`,
-`ci_lower`, and `ci_upper`. The `ci_*` fields enable coverage and power
-metrics in addition to bias and RMSE.
+An estimator is any function that accepts the data frame returned by
+[`causalsim_draw()`](https://chaycereed.github.io/causalsim/reference/causalsim_draw.md)
+and returns a named numeric vector. The `ci_lower` and `ci_upper` fields
+are optional but enable coverage and power metrics.
 
 ``` r
 # Naive: regresses Y on A only — omits the confounder
@@ -110,11 +119,27 @@ ols_est <- function(data) {
 }
 ```
 
+Named lists are also accepted, so the following is equivalent:
+
+``` r
+ols_est <- function(data) {
+  fit <- lm(Y ~ A + W, data = data)
+  ci  <- confint(fit)["A", ]
+  list(
+    estimate = coef(fit)["A"],
+    ci_lower = ci[1],
+    ci_upper = ci[2]
+  )
+}
+```
+
+------------------------------------------------------------------------
+
 ## Step 4: Evaluate Each Estimator
 
 [`causalsim_eval()`](https://chaycereed.github.io/causalsim/reference/causalsim_eval.md)
-runs `reps` independent replications and returns bias, RMSE, coverage,
-and power with Monte Carlo standard errors.
+runs `reps` independent replications and returns a tidy summary of bias,
+RMSE, coverage, and power with Monte Carlo standard errors.
 
 ``` r
 eval_naive <- causalsim_eval(dgp, naive_est, reps = 300L, seed = 1L)
@@ -143,16 +168,53 @@ eval_ols
 The naive estimator’s bias is substantial: treatment is positively
 correlated with $W$, which also raises $Y$ through the baseline, so the
 unadjusted coefficient absorbs part of that association. OLS eliminates
-the bias by conditioning on $W$. Coverage for the naive estimator is
-well below the nominal 95 % because confidence intervals are centered on
-the wrong value.
+the bias by conditioning on $W$. Coverage for the naive estimator falls
+well below the nominal 95% because the confidence intervals are centered
+on the wrong value.
+
+[`summary()`](https://rdrr.io/r/base/summary.html) adds the full
+distribution of per-replication estimates, and
+[`plot()`](https://rdrr.io/r/graphics/plot.default.html) shows it as a
+histogram:
+
+``` r
+summary(eval_ols)
+#> <causalsim_eval_summary>  reps: 300  true ATE: 2
+#> 
+#> Estimate distribution:
+#>   mean  : 1.9998
+#>   sd    : 0.0916
+#>   median: 2
+#>   [p10, p90]: [1.883, 2.1217]
+#> 
+#> Metrics:
+#>    metric   value      se
+#>      bias -0.0002 0.00529
+#>      rmse  0.0915 0.00338
+#>  coverage  0.9433 0.01335
+#>     power  1.0000 0.00000
+```
+
+``` r
+plot(eval_ols)
+```
+
+![Distribution of OLS estimates over 300 replications. Solid line: true
+ATE. Dashed line: mean
+estimate.](simulation-study_files/figure-html/plot-ols-1.png)
+
+Distribution of OLS estimates over 300 replications. Solid line: true
+ATE. Dashed line: mean estimate.
+
+------------------------------------------------------------------------
 
 ## Step 5: Vary Sample Size with `causalsim_grid()`
 
 [`causalsim_grid()`](https://chaycereed.github.io/causalsim/reference/causalsim_grid.md)
 evaluates an estimator over the Cartesian product of the supplied
-parameter values. Here we vary `n` across four levels to track how the
-OLS estimator’s precision improves with more data.
+parameter values, returning a tidy data frame of metrics for each cell.
+Here we vary `n` across four levels to track how the OLS estimator’s
+precision improves with more data.
 
 ``` r
 grid_n <- causalsim_grid(
@@ -182,13 +244,15 @@ RMSE roughly halves as $n$ quadruples — consistent with $\sqrt{n}$-rate
 convergence for OLS in a correctly specified model. Bias stays near zero
 at every sample size.
 
+------------------------------------------------------------------------
+
 ## Step 6: Vary Confounding Strength
 
-We can vary the propensity string to study how bias grows as confounding
-increases. Because
+Varying the `propensity` preset shows how bias scales with confounding.
+Because
 [`causalsim_grid()`](https://chaycereed.github.io/causalsim/reference/causalsim_grid.md)
-accepts one estimator at a time, we run it separately for each and
-combine the results.
+accepts one estimator at a time, we run it separately and combine the
+results.
 
 ``` r
 conf_levels <- list(propensity = c("low", "moderate", "high"))
@@ -227,10 +291,59 @@ in the model.
 
 ------------------------------------------------------------------------
 
-This three-step workflow — define, evaluate, grid — scales naturally to
-more complex settings: heterogeneous effects, multiple confounders, or
-estimators that require a different adjustment strategy. See
+## Where to go next
+
+This workflow — define, evaluate, grid — scales to more complex
+settings. A few directions:
+
+| Goal                       | How                                                                                                                   |
+|----------------------------|-----------------------------------------------------------------------------------------------------------------------|
+| Heterogeneous effects      | Pass a function to `effect` in [`causalsim_dgp()`](https://chaycereed.github.io/causalsim/reference/causalsim_dgp.md) |
+| Non-normal covariates      | Use `covar("binary")` or `covar("uniform")` in `covariates`                                                           |
+| Multiple confounders       | Set `n_confounders = 3` or pass named `covariates`                                                                    |
+| Custom covariate structure | Mix `n_confounders` with explicit `covariates = list(...)`                                                            |
+
+See
 [`?causalsim_dgp`](https://chaycereed.github.io/causalsim/reference/causalsim_dgp.md)
-for the full covariate specification API and
+and
 [`?covar`](https://chaycereed.github.io/causalsim/reference/covar.md)
-for defining non-normal covariates.
+for the full API.
+
+------------------------------------------------------------------------
+
+## Session info
+
+``` r
+sessionInfo()
+#> R version 4.6.0 (2026-04-24)
+#> Platform: x86_64-pc-linux-gnu
+#> Running under: Ubuntu 24.04.4 LTS
+#> 
+#> Matrix products: default
+#> BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
+#> LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.26.so;  LAPACK version 3.12.0
+#> 
+#> locale:
+#>  [1] LC_CTYPE=C.UTF-8       LC_NUMERIC=C           LC_TIME=C.UTF-8       
+#>  [4] LC_COLLATE=C.UTF-8     LC_MONETARY=C.UTF-8    LC_MESSAGES=C.UTF-8   
+#>  [7] LC_PAPER=C.UTF-8       LC_NAME=C              LC_ADDRESS=C          
+#> [10] LC_TELEPHONE=C         LC_MEASUREMENT=C.UTF-8 LC_IDENTIFICATION=C   
+#> 
+#> time zone: UTC
+#> tzcode source: system (glibc)
+#> 
+#> attached base packages:
+#> [1] stats     graphics  grDevices utils     datasets  methods   base     
+#> 
+#> other attached packages:
+#> [1] causalsim_0.0.0.9000
+#> 
+#> loaded via a namespace (and not attached):
+#>  [1] digest_0.6.39     desc_1.4.3        R6_2.6.1          fastmap_1.2.0    
+#>  [5] xfun_0.57         cachem_1.1.0      knitr_1.51        htmltools_0.5.9  
+#>  [9] rmarkdown_2.31    lifecycle_1.0.5   cli_3.6.6         sass_0.4.10      
+#> [13] pkgdown_2.2.0     textshaping_1.0.5 jquerylib_0.1.4   systemfonts_1.3.2
+#> [17] compiler_4.6.0    tools_4.6.0       ragg_1.5.2        evaluate_1.0.5   
+#> [21] bslib_0.10.0      yaml_2.3.12       jsonlite_2.0.0    rlang_1.2.0      
+#> [25] fs_2.1.0
+```

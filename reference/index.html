@@ -3,7 +3,7 @@
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
-    <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
+    <nav class="navbar navbar-expand-lg fixed-top bg-primary" data-bs-theme="dark" aria-label="Site navigation"><div class="container">
 
     <a class="navbar-brand me-2" href="../index.html">causalsim</a>
 
@@ -15,9 +15,13 @@
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
-      <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
-<li class="nav-item"><a class="nav-link" href="../articles/index.html">Articles</a></li>
-      </ul><ul class="navbar-nav"><li class="nav-item"><a class="external-link nav-link" href="https://github.com/chaycereed/causalsim" aria-label="GitHub"><span class="fa fab fa-github"></span></a></li>
+      <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../index.html">Home</a></li>
+<li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-vignette" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Vignette</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-vignette"><li><a class="dropdown-item" href="../articles/simulation-study.html">A Complete Simulation Study</a></li>
+  </ul></li>
+      </ul><ul class="navbar-nav"><li class="nav-item"><a class="external-link nav-link" href="https://github.com/chaycereed/causalsim"><span class="fa fab fa-github"></span></a></li>
       </ul></div>
 
 
@@ -75,6 +79,20 @@
 
         </dt>
         <dd>Evaluate a causal estimator against a known DGP</dd>
+
+        <dt>
+
+          <code><a href="summary.causalsim_eval.html">summary(<i>&lt;causalsim_eval&gt;</i>)</a></code>
+
+        </dt>
+        <dd>Summarise a causalsim_eval result</dd>
+
+        <dt>
+
+          <code><a href="plot.causalsim_eval.html">plot(<i>&lt;causalsim_eval&gt;</i>)</a></code>
+
+        </dt>
+        <dd>Plot the distribution of estimates from a causalsim_eval result</dd>
 
         <dt>
 
