@@ -52,7 +52,7 @@ dgp
 #>     W       normal  [confounder]
 ```
 
-The true ATE is exact when `effect` is a scalar — no Monte Carlo
+The true ATE is exact when `effect` is a scalar; no Monte Carlo
 approximation is needed. For function-valued effects,
 [`causalsim_dgp()`](https://chaycereed.github.io/causalsim/reference/causalsim_dgp.md)
 approximates the ATE via 10,000 Monte Carlo draws at construction time.
@@ -63,7 +63,7 @@ approximates the ATE via 10,000 Monte Carlo draws at construction time.
 
 [`causalsim_draw()`](https://chaycereed.github.io/causalsim/reference/causalsim_draw.md)
 simulates one dataset from the DGP. The columns `.tau` and `.p` are the
-individual causal effect and propensity score — diagnostic metadata that
+individual causal effect and propensity score, diagnostic metadata that
 is not available in real observational data.
 
 ``` r
@@ -102,7 +102,7 @@ and returns a named numeric vector. The `ci_lower` and `ci_upper` fields
 are optional but enable coverage and power metrics.
 
 ``` r
-# Naive: regresses Y on A only — omits the confounder
+# Naive: regresses Y on A only, omits the confounder
 naive_est <- function(data) {
   fit <- lm(Y ~ A, data = data)
   est <- coef(fit)[["A"]]
@@ -240,7 +240,7 @@ grid_n
 #>  1000   rmse  0.064648194 0.002489179
 ```
 
-RMSE roughly halves as $n$ quadruples — consistent with $\sqrt{n}$-rate
+RMSE roughly halves as $n$ quadruples, consistent with $\sqrt{n}$-rate
 convergence for OLS in a correctly specified model. Bias stays near zero
 at every sample size.
 
@@ -258,16 +258,16 @@ results.
 conf_levels <- list(propensity = c("low", "moderate", "high"))
 
 grid_naive <- causalsim_grid(dgp, naive_est,
-                              vary    = conf_levels,
-                              reps    = 300L,
-                              metrics = "bias",
-                              seed    = 1L)
+                             vary = conf_levels,
+                             reps = 300L,
+                             metrics = "bias",
+                             seed = 1L)
 
-grid_ols   <- causalsim_grid(dgp, ols_est,
-                              vary    = conf_levels,
-                              reps    = 300L,
-                              metrics = "bias",
-                              seed    = 1L)
+grid_ols <- causalsim_grid(dgp, ols_est,
+                           vary = conf_levels,
+                           reps = 300L,
+                           metrics = "bias",
+                           seed = 1L)
 
 comparison <- rbind(
   cbind(estimator = "naive", grid_naive$results),
@@ -293,8 +293,8 @@ in the model.
 
 ## Where to go next
 
-This workflow — define, evaluate, grid — scales to more complex
-settings. A few directions:
+This workflow (define, evaluate, grid) scales to more complex settings.
+A few directions:
 
 | Goal                       | How                                                                                                                   |
 |----------------------------|-----------------------------------------------------------------------------------------------------------------------|
