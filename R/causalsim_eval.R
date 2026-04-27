@@ -40,8 +40,8 @@
 #'   \item{`"rmse"`}{Root mean squared error: `sqrt(mean((estimate - true_ate)^2))`.}
 #'   \item{`"coverage"`}{Proportion of replications where the CI brackets
 #'     `true_ate`. Requires `ci_lower` and `ci_upper`.}
-#'   \item{`"power"`}{Proportion of replications where the CI excludes zero
-#'     — i.e., the rejection rate of H0: ATE = 0. When `true_ate != 0`,
+#'   \item{`"power"`}{Proportion of replications where the CI excludes zero,
+#'     i.e., the rejection rate of H0: ATE = 0. When `true_ate != 0`,
 #'     this is power; when `true_ate == 0`, it is the Type I error rate.
 #'     Requires `ci_lower` and `ci_upper`.}
 #' }
@@ -82,9 +82,9 @@
 causalsim_eval <- function(
   dgp,
   estimator,
-  reps    = 200L,
+  reps = 200L,
   metrics = c("bias", "rmse", "coverage", "power"),
-  seed    = NULL
+  seed = NULL
 ) {
   if (!inherits(dgp, "causalsim_dgp")) {
     stop("`dgp` must be a causalsim_dgp object.", call. = FALSE)
@@ -92,10 +92,10 @@ causalsim_eval <- function(
   if (!is.function(estimator)) {
     stop("`estimator` must be a function.", call. = FALSE)
   }
-  reps    <- .validate_positive(reps, "reps", as_int = TRUE)
+  reps <- .validate_positive(reps, "reps", as_int = TRUE)
   metrics <- match.arg(
     metrics,
-    choices    = c("bias", "rmse", "coverage", "power"),
+    choices = c("bias", "rmse", "coverage", "power"),
     several.ok = TRUE
   )
 
@@ -118,10 +118,10 @@ causalsim_eval <- function(
 
   structure(
     list(
-      metrics  = metrics_df,
-      draws    = draws,
+      metrics = metrics_df,
+      draws = draws,
       true_ate = dgp$true_ate,
-      reps     = reps
+      reps = reps
     ),
     class = "causalsim_eval"
   )
@@ -166,14 +166,14 @@ summary.causalsim_eval <- function(object, ...) {
   est <- object$draws$estimate
   structure(
     list(
-      metrics         = object$metrics,
-      mean_estimate   = mean(est),
-      sd_estimate     = stats::sd(est),
+      metrics = object$metrics,
+      mean_estimate = mean(est),
+      sd_estimate = stats::sd(est),
       median_estimate = stats::median(est),
-      p10_estimate    = unname(stats::quantile(est, 0.10)),
-      p90_estimate    = unname(stats::quantile(est, 0.90)),
-      true_ate        = object$true_ate,
-      reps            = object$reps
+      p10_estimate = unname(stats::quantile(est, 0.10)),
+      p90_estimate = unname(stats::quantile(est, 0.90)),
+      true_ate = object$true_ate,
+      reps = object$reps
     ),
     class = "causalsim_eval_summary"
   )
@@ -218,9 +218,9 @@ plot.causalsim_eval <- function(x, ...) {
 
   graphics::hist(
     est,
-    main   = "Distribution of Estimates",
-    xlab   = "Estimate",
-    col    = "grey85",
+    main = "Distribution of Estimates",
+    xlab = "Estimate",
+    col = "grey85",
     border = "white",
     ...
   )

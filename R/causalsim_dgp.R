@@ -6,7 +6,7 @@
 #'
 #' @param n Positive integer. Sample size for each simulated dataset.
 #' @param effect Numeric scalar or function. A scalar specifies a constant
-#'   (homogeneous) treatment effect — ATE = CATE everywhere. A function should
+#'   (homogeneous) treatment effect; ATE = CATE everywhere. A function should
 #'   accept named arguments matching covariate names defined in the DGP and
 #'   return a numeric vector of individual-level causal effects (CATE).
 #'   See Details.
@@ -52,7 +52,7 @@
 #' ## Function calling convention
 #'
 #' The `effect`, `propensity`, and `baseline` functions are called with named
-#' arguments matching covariate names — not a data frame. Write:
+#' arguments matching covariate names, not a data frame. Write:
 #'
 #' ```r
 #' effect = function(W) 2 + 1.5 * W
@@ -78,7 +78,7 @@
 #'   \item{`propensity_fn`}{Normalized propensity function}
 #'   \item{`baseline_fn`}{Normalized baseline function}
 #'   \item{`sigma`}{Outcome noise standard deviation}
-#'   \item{`true_ate`}{True ATE — exact for scalar, MC approximation otherwise}
+#'   \item{`true_ate`}{True ATE: exact for scalar, MC approximation otherwise}
 #'   \item{`heterogeneous`}{Logical; `TRUE` if `effect` was a function}
 #'   \item{`mc_draws`}{Monte Carlo draws used (integer)}
 #' }
@@ -95,37 +95,37 @@
 #'     W = covar("normal", role = "confounder"),
 #'     V = covar("binary", role = "effect_modifier", prob = 0.4)
 #'   ),
-#'   effect     = function(V) 2 + 1.5 * V,
+#'   effect = function(V) 2 + 1.5 * V,
 #'   propensity = function(W) plogis(0.5 * W),
-#'   baseline   = function(W) 1.5 * W
+#'   baseline = function(W) 1.5 * W
 #' )
 #'
 #' # Mixed: shorthand confounders + explicit instrument + RCT propensity
 #' dgp3 <- causalsim_dgp(
 #'   n = 1000,
 #'   n_confounders = 2,
-#'   covariates    = list(Z = covar("normal", role = "instrument")),
-#'   effect        = 1,
-#'   propensity    = 0.5
+#'   covariates = list(Z = covar("normal", role = "instrument")),
+#'   effect = 1,
+#'   propensity = 0.5
 #' )
 #'
 #' @export
 causalsim_dgp <- function(
   n,
-  effect             = 1,
-  propensity         = "moderate",
-  baseline           = 0,
-  sigma              = 1,
-  covariates         = list(),
-  n_confounders      = 0L,
+  effect = 1,
+  propensity = "moderate",
+  baseline = 0,
+  sigma = 1,
+  covariates = list(),
+  n_confounders = 0L,
   n_effect_modifiers = 0L,
-  n_instruments      = 0L,
-  n_noise            = 0L,
-  mc_draws           = 10000L
+  n_instruments = 0L,
+  n_noise = 0L,
+  mc_draws = 10000L
 ) {
-  n        <- .validate_positive(n,        "n",        as_int = TRUE)
+  n <- .validate_positive(n, "n", as_int = TRUE)
   mc_draws <- .validate_positive(mc_draws, "mc_draws", as_int = TRUE)
-  sigma    <- .validate_positive(sigma,    "sigma")
+  sigma <- .validate_positive(sigma, "sigma")
   n_confounders      <- .validate_nonneg(
     n_confounders, "n_confounders", as_int = TRUE
   )
@@ -141,41 +141,41 @@ causalsim_dgp <- function(
     n_confounders, n_effect_modifiers, n_instruments, n_noise, covariates
   )
 
-  heterogeneous  <- is.function(effect)
-  effect_fn      <- .normalize_fn(effect,     "effect",     covar_spec)
-  propensity_fn  <- .normalize_fn(propensity, "propensity", covar_spec)
-  baseline_fn    <- .normalize_fn(baseline,   "baseline",   covar_spec)
+  heterogeneous <- is.function(effect)
+  effect_fn <- .normalize_fn(effect, "effect", covar_spec)
+  propensity_fn <- .normalize_fn(propensity, "propensity", covar_spec)
+  baseline_fn <- .normalize_fn(baseline, "baseline", covar_spec)
 
-  .validate_fn_args(effect_fn,     names(covar_spec), "effect")
+  .validate_fn_args(effect_fn, names(covar_spec), "effect")
   .validate_fn_args(propensity_fn, names(covar_spec), "propensity")
-  .validate_fn_args(baseline_fn,   names(covar_spec), "baseline")
+  .validate_fn_args(baseline_fn, names(covar_spec), "baseline")
   .validate_propensity_fn(propensity_fn, covar_spec)
 
   true_ate <- .mc_ate(effect_fn, covar_spec, mc_draws, heterogeneous)
 
   structure(
     list(
-      n             = n,
-      covar_spec    = covar_spec,
-      effect_fn     = effect_fn,
+      n = n,
+      covar_spec = covar_spec,
+      effect_fn = effect_fn,
       propensity_fn = propensity_fn,
-      baseline_fn   = baseline_fn,
-      sigma         = sigma,
-      true_ate      = true_ate,
+      baseline_fn = baseline_fn,
+      sigma = sigma,
+      true_ate = true_ate,
       heterogeneous = heterogeneous,
-      mc_draws      = mc_draws,
-      params        = list(
-        n                  = n,
-        effect             = effect,
-        propensity         = propensity,
-        baseline           = baseline,
-        sigma              = sigma,
-        covariates         = covariates,
-        n_confounders      = n_confounders,
+      mc_draws = mc_draws,
+      params = list(
+        n = n,
+        effect = effect,
+        propensity = propensity,
+        baseline = baseline,
+        sigma = sigma,
+        covariates = covariates,
+        n_confounders = n_confounders,
         n_effect_modifiers = n_effect_modifiers,
-        n_instruments      = n_instruments,
-        n_noise            = n_noise,
-        mc_draws           = mc_draws
+        n_instruments = n_instruments,
+        n_noise = n_noise,
+        mc_draws = mc_draws
       )
     ),
     class = "causalsim_dgp"

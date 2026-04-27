@@ -19,8 +19,8 @@
 #'     named to match the spec (e.g. `W`, `W1`, `Z`).}
 #'   \item{`A`}{Binary treatment indicator (0/1).}
 #'   \item{`Y`}{Observed outcome.}
-#'   \item{`.tau`}{Individual treatment effect (CATE) — ground truth.}
-#'   \item{`.p`}{Individual propensity score — ground truth.}
+#'   \item{`.tau`}{Individual treatment effect (CATE). Ground truth.}
+#'   \item{`.p`}{Individual propensity score. Ground truth.}
 #' }
 #'
 #' The `.tau` and `.p` columns carry individual-level ground truth and are
@@ -47,10 +47,10 @@ causalsim_draw <- function(dgp, seed = NULL) {
   n      <- dgp$n
   cov_df <- .generate_covariate_data(dgp$covar_spec, n)
 
-  p   <- .apply_effect(dgp$propensity_fn, cov_df, n = n)
-  a   <- stats::rbinom(n, size = 1L, prob = p)
-  mu  <- .apply_effect(dgp$baseline_fn,  cov_df, n = n)
-  tau <- .apply_effect(dgp$effect_fn,    cov_df, n = n)
+  p <- .apply_effect(dgp$propensity_fn, cov_df, n = n)
+  a <- stats::rbinom(n, size = 1L, prob = p)
+  mu <- .apply_effect(dgp$baseline_fn, cov_df, n = n)
+  tau <- .apply_effect(dgp$effect_fn, cov_df, n = n)
   eps <- stats::rnorm(n, mean = 0, sd = dgp$sigma)
   y   <- mu + tau * a + eps
 

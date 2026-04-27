@@ -62,11 +62,11 @@
 #' }
 #'
 #' grid_result <- causalsim_grid(
-#'   dgp       = dgp,
+#'   dgp = dgp,
 #'   estimator = ols_estimator,
-#'   vary      = list(n = c(250L, 500L, 1000L)),
-#'   reps      = 50L,
-#'   seed      = 1L
+#'   vary = list(n = c(250L, 500L, 1000L)),
+#'   reps = 50L,
+#'   seed = 1L
 #' )
 #' grid_result
 #'
@@ -75,9 +75,9 @@ causalsim_grid <- function(
   dgp,
   estimator,
   vary,
-  reps    = 200L,
+  reps = 200L,
   metrics = c("bias", "rmse", "coverage", "power"),
-  seed    = NULL,
+  seed = NULL,
   verbose = FALSE
 ) {
   if (!inherits(dgp, "causalsim_dgp")) {
@@ -90,13 +90,13 @@ causalsim_grid <- function(
 
   .validate_vary(vary, dgp)
 
-  grid_df  <- expand.grid(vary, stringsAsFactors = FALSE)
-  n_cells  <- nrow(grid_df)
+  grid_df <- expand.grid(vary, stringsAsFactors = FALSE)
+  n_cells <- nrow(grid_df)
   vary_nms <- names(vary)
 
   metrics <- match.arg(
     metrics,
-    choices    = c("bias", "rmse", "coverage", "power"),
+    choices = c("bias", "rmse", "coverage", "power"),
     several.ok = TRUE
   )
 
@@ -125,16 +125,16 @@ causalsim_grid <- function(
     all_rows[[i]] <- cell_result
   }
 
-  results          <- do.call(rbind, all_rows)
-  results          <- results[, c(vary_nms, "metric", "value", "se")]
+  results <- do.call(rbind, all_rows)
+  results <- results[, c(vary_nms, "metric", "value", "se")]
   rownames(results) <- NULL
 
   structure(
     list(
       results = results,
-      grid    = grid_df,
-      vary    = vary_nms,
-      reps    = reps,
+      grid = grid_df,
+      vary = vary_nms,
+      reps = reps,
       metrics = metrics
     ),
     class = "causalsim_grid"

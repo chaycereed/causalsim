@@ -96,9 +96,9 @@
 .draw_one_covariate <- function(cv, n) {
   p <- cv$params
   switch(cv$dist,
-    normal  = stats::rnorm(n,  mean = p$mean %||% 0,   sd   = p$sd   %||% 1),
-    binary  = stats::rbinom(n, size = 1L, prob = p$prob %||% 0.5),
-    uniform = stats::runif(n,  min  = p$min  %||% 0,   max  = p$max  %||% 1),
+    normal = stats::rnorm(n, mean = p$mean %||% 0, sd = p$sd %||% 1),
+    binary = stats::rbinom(n, size = 1L, prob = p$prob %||% 0.5),
+    uniform = stats::runif(n, min = p$min %||% 0, max = p$max %||% 1),
     stop(sprintf("Unknown distribution: '%s'", cv$dist), call. = FALSE)
   )
 }
