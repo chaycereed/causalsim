@@ -67,8 +67,8 @@ numeric vector or one-row data frame with at minimum:
 \item{\code{"rmse"}}{Root mean squared error: \code{sqrt(mean((estimate - true_ate)^2))}.}
 \item{\code{"coverage"}}{Proportion of replications where the CI brackets
 \code{true_ate}. Requires \code{ci_lower} and \code{ci_upper}.}
-\item{\code{"power"}}{Proportion of replications where the CI excludes zero
-— i.e., the rejection rate of H0: ATE = 0. When \code{true_ate != 0},
+\item{\code{"power"}}{Proportion of replications where the CI excludes zero,
+i.e., the rejection rate of H0: ATE = 0. When \code{true_ate != 0},
 this is power; when \code{true_ate == 0}, it is the Type I error rate.
 Requires \code{ci_lower} and \code{ci_upper}.}
 }
@@ -96,7 +96,9 @@ ols_estimator <- function(data) {
   c(estimate = est, ci_lower = est - 1.96 * se, ci_upper = est + 1.96 * se)
 }
 
+\donttest{
 result <- causalsim_eval(dgp, ols_estimator, reps = 100L, seed = 1L)
 result
+}
 
 }

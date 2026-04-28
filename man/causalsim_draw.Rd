@@ -19,8 +19,8 @@ A data frame with \code{dgp$n} rows and the following columns:
 named to match the spec (e.g. \code{W}, \code{W1}, \code{Z}).}
 \item{\code{A}}{Binary treatment indicator (0/1).}
 \item{\code{Y}}{Observed outcome.}
-\item{\code{.tau}}{Individual treatment effect (CATE) — ground truth.}
-\item{\code{.p}}{Individual propensity score — ground truth.}
+\item{\code{.tau}}{Individual treatment effect (CATE). Ground truth.}
+\item{\code{.p}}{Individual propensity score. Ground truth.}
 }
 
 The \code{.tau} and \code{.p} columns carry individual-level ground truth and are

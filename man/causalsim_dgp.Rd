@@ -22,7 +22,7 @@ causalsim_dgp(
 \item{n}{Positive integer. Sample size for each simulated dataset.}
 
 \item{effect}{Numeric scalar or function. A scalar specifies a constant
-(homogeneous) treatment effect — ATE = CATE everywhere. A function should
+(homogeneous) treatment effect; ATE = CATE everywhere. A function should
 accept named arguments matching covariate names defined in the DGP and
 return a numeric vector of individual-level causal effects (CATE).
 See Details.}
@@ -71,7 +71,7 @@ An S3 object of class \code{causalsim_dgp} with components:
 \item{\code{propensity_fn}}{Normalized propensity function}
 \item{\code{baseline_fn}}{Normalized baseline function}
 \item{\code{sigma}}{Outcome noise standard deviation}
-\item{\code{true_ate}}{True ATE — exact for scalar, MC approximation otherwise}
+\item{\code{true_ate}}{True ATE: exact for scalar, MC approximation otherwise}
 \item{\code{heterogeneous}}{Logical; \code{TRUE} if \code{effect} was a function}
 \item{\code{mc_draws}}{Monte Carlo draws used (integer)}
 }
@@ -96,7 +96,7 @@ Y  = baseline(W) + effect(W) * A + N(0, sigma^2)
 \subsection{Function calling convention}{
 
 The \code{effect}, \code{propensity}, and \code{baseline} functions are called with named
-arguments matching covariate names — not a data frame. Write:
+arguments matching covariate names, not a data frame. Write:
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{effect = function(W) 2 + 1.5 * W
 propensity = function(W1, W2) plogis(0.3 * W1 + 0.5 * W2)
@@ -127,18 +127,18 @@ dgp2 <- causalsim_dgp(
     W = covar("normal", role = "confounder"),
     V = covar("binary", role = "effect_modifier", prob = 0.4)
   ),
-  effect     = function(V) 2 + 1.5 * V,
+  effect = function(V) 2 + 1.5 * V,
   propensity = function(W) plogis(0.5 * W),
-  baseline   = function(W) 1.5 * W
+  baseline = function(W) 1.5 * W
 )
 
 # Mixed: shorthand confounders + explicit instrument + RCT propensity
 dgp3 <- causalsim_dgp(
   n = 1000,
   n_confounders = 2,
-  covariates    = list(Z = covar("normal", role = "instrument")),
-  effect        = 1,
-  propensity    = 0.5
+  covariates = list(Z = covar("normal", role = "instrument")),
+  effect = 1,
+  propensity = 0.5
 )
 
 }

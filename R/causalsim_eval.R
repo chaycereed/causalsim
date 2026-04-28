@@ -75,8 +75,10 @@
 #'   c(estimate = est, ci_lower = est - 1.96 * se, ci_upper = est + 1.96 * se)
 #' }
 #'
+#' \donttest{
 #' result <- causalsim_eval(dgp, ols_estimator, reps = 100L, seed = 1L)
 #' result
+#' }
 #'
 #' @export
 causalsim_eval <- function(

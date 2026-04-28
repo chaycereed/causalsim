@@ -10,6 +10,15 @@ Construct, simulate, and evaluate causal data generating processes (DGPs)
 with known ground truth. Variable roles and assumption violations are
 first-class concepts. All output is tidy and ggplot2-compatible.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://chaycereed.github.io/causalsim/}
+  \item \url{https://github.com/chaycereed/causalsim}
+  \item Report bugs at \url{https://github.com/chaycereed/causalsim/issues}
+}
+
+}
 \author{
 \strong{Maintainer}: Chayce Reed \email{code.jcr@gmail.com}
 

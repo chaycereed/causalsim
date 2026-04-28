@@ -1,9 +1,9 @@
 Package: causalsim
 Title: Simulation-Ready Causal Data Generating Processes
-Version: 0.0.0.9000
+Version: 0.1.0
 Authors@R:
-    person("Chayce", "Reed", , "code.jcr@gmail.com", role = c("aut", "cre"),
-           comment = c(ORCID = ""))
+    person("Chayce", "Reed", email = "code.jcr@gmail.com",
+           role = c("aut", "cre"))
 Description: Construct, simulate, and evaluate causal data generating processes
     (DGPs) with known ground truth. Designed for benchmarking causal estimators,
     stress-testing assumption violations, and building reproducible teaching
@@ -11,7 +11,11 @@ Description: Construct, simulate, and evaluate causal data generating processes
     and assumption violations (unmeasured confounding, positivity, effect
     heterogeneity) are first-class concepts in the API.
 License: MIT + file LICENSE
+URL: https://chaycereed.github.io/causalsim/,
+    https://github.com/chaycereed/causalsim
+BugReports: https://github.com/chaycereed/causalsim/issues
 Encoding: UTF-8
+Depends: R (>= 4.0.0)
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
 Suggests:

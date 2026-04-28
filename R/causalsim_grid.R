@@ -61,6 +61,7 @@
 #'   c(estimate = est, ci_lower = est - 1.96 * se, ci_upper = est + 1.96 * se)
 #' }
 #'
+#' \donttest{
 #' grid_result <- causalsim_grid(
 #'   dgp = dgp,
 #'   estimator = ols_estimator,
@@ -69,6 +70,7 @@
 #'   seed = 1L
 #' )
 #' grid_result
+#' }
 #'
 #' @export
 causalsim_grid <- function(
