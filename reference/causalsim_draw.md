@@ -42,11 +42,11 @@ A data frame with `dgp$n` rows and the following columns:
 
 - `.tau`:
 
-  Individual treatment effect (CATE) — ground truth.
+  Individual treatment effect (CATE). Ground truth.
 
 - `.p`:
 
-  Individual propensity score — ground truth.
+  Individual propensity score. Ground truth.
 
 The `.tau` and `.p` columns carry individual-level ground truth and are
 prefixed with `.` to distinguish them from observed variables.

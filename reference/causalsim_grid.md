@@ -127,12 +127,13 @@ ols_estimator <- function(data) {
   c(estimate = est, ci_lower = est - 1.96 * se, ci_upper = est + 1.96 * se)
 }
 
+# \donttest{
 grid_result <- causalsim_grid(
-  dgp       = dgp,
+  dgp = dgp,
   estimator = ols_estimator,
-  vary      = list(n = c(250L, 500L, 1000L)),
-  reps      = 50L,
-  seed      = 1L
+  vary = list(n = c(250L, 500L, 1000L)),
+  reps = 50L,
+  seed = 1L
 )
 grid_result
 #> <causalsim_grid>  3 cells  vary: n  reps/cell: 50
@@ -151,4 +152,5 @@ grid_result
 #>  1000     rmse  0.072347315 0.006066306
 #> 
 #>   ... 2 more rows. Access full results via $results.
+# }
 ```

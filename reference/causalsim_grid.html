@@ -13,7 +13,7 @@ sample size, confounding strength, effect size, or noise level."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">causalsim</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -37,7 +37,7 @@ sample size, confounding strength, effect size, or noise level."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Evaluate an estimator across a parameter grid</h1>
-
+      <small class="dont-index">Source: <a href="https://github.com/chaycereed/causalsim/blob/main/R/causalsim_grid.R" class="external-link"><code>R/causalsim_grid.R</code></a></small>
       <div class="d-none name"><code>causalsim_grid.Rd</code></div>
     </div>
 
@@ -161,12 +161,13 @@ Design the base DGP accordingly.</p>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>estimate <span class="op">=</span> <span class="va">est</span>, ci_lower <span class="op">=</span> <span class="va">est</span> <span class="op">-</span> <span class="fl">1.96</span> <span class="op">*</span> <span class="va">se</span>, ci_upper <span class="op">=</span> <span class="va">est</span> <span class="op">+</span> <span class="fl">1.96</span> <span class="op">*</span> <span class="va">se</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="va">grid_result</span> <span class="op">&lt;-</span> <span class="fu">causalsim_grid</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  dgp       <span class="op">=</span> <span class="va">dgp</span>,</span></span>
+<span class="r-in"><span>  dgp <span class="op">=</span> <span class="va">dgp</span>,</span></span>
 <span class="r-in"><span>  estimator <span class="op">=</span> <span class="va">ols_estimator</span>,</span></span>
-<span class="r-in"><span>  vary      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">250L</span>, <span class="fl">500L</span>, <span class="fl">1000L</span><span class="op">)</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  reps      <span class="op">=</span> <span class="fl">50L</span>,</span></span>
-<span class="r-in"><span>  seed      <span class="op">=</span> <span class="fl">1L</span></span></span>
+<span class="r-in"><span>  vary <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">250L</span>, <span class="fl">500L</span>, <span class="fl">1000L</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  reps <span class="op">=</span> <span class="fl">50L</span>,</span></span>
+<span class="r-in"><span>  seed <span class="op">=</span> <span class="fl">1L</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">grid_result</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;causalsim_grid&gt;  3 cells  vary: n  reps/cell: 50</span>
@@ -185,6 +186,7 @@ Design the base DGP accordingly.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  1000     rmse  0.072347315 0.006066306</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ... 2 more rows. Access full results via $results.</span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

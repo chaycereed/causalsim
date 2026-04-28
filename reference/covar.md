@@ -25,8 +25,8 @@ covar(dist = "normal", role = "confounder", ...)
 
   `"confounder"`
 
-  :   Enters both the propensity model and the outcome baseline —
-      creates confounding bias in naive estimators.
+  :   Enters both the propensity model and the outcome baseline; creates
+      confounding bias in naive estimators.
 
   `"instrument"`
 

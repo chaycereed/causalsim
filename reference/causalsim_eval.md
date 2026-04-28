@@ -99,7 +99,7 @@ numeric vector or one-row data frame with at minimum:
 
 - `"power"`:
 
-  Proportion of replications where the CI excludes zero — i.e., the
+  Proportion of replications where the CI excludes zero, i.e., the
   rejection rate of H0: ATE = 0. When `true_ate != 0`, this is power;
   when `true_ate == 0`, it is the Type I error rate. Requires `ci_lower`
   and `ci_upper`.
@@ -127,6 +127,7 @@ ols_estimator <- function(data) {
   c(estimate = est, ci_lower = est - 1.96 * se, ci_upper = est + 1.96 * se)
 }
 
+# \donttest{
 result <- causalsim_eval(dgp, ols_estimator, reps = 100L, seed = 1L)
 result
 #> <causalsim_eval>  reps: 100  true ATE: 2
@@ -136,4 +137,5 @@ result
 #>      rmse  0.1295 0.00723
 #>  coverage  0.9300 0.02551
 #>     power  1.0000 0.00000
+# }
 ```

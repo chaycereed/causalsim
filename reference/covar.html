@@ -13,7 +13,7 @@ enters the automatically-generated treatment and outcome models."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">causalsim</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -37,7 +37,7 @@ enters the automatically-generated treatment and outcome models."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Define a covariate for a causal DGP</h1>
-
+      <small class="dont-index">Source: <a href="https://github.com/chaycereed/causalsim/blob/main/R/covar.R" class="external-link"><code>R/covar.R</code></a></small>
       <div class="d-none name"><code>covar.Rd</code></div>
     </div>
 
@@ -65,7 +65,7 @@ enters the automatically-generated treatment and outcome models.</p>
 <dt id="arg-role">role<a class="anchor" aria-label="anchor" href="#arg-role"></a></dt>
 <dd><p>Character vector. Causal role(s). One or more of:</p><dl><dt><code>"confounder"</code></dt>
 <dd><p>Enters both the propensity model and the outcome
-baseline — creates confounding bias in naive estimators.</p></dd>
+baseline; creates confounding bias in naive estimators.</p></dd>
 
 <dt><code>"instrument"</code></dt>
 <dd><p>Enters the propensity model only (exclusion

@@ -9,7 +9,7 @@ model:"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">causalsim</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,7 +33,7 @@ model:"></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Draw a dataset from a causal DGP</h1>
-
+      <small class="dont-index">Source: <a href="https://github.com/chaycereed/causalsim/blob/main/R/causalsim_draw.R" class="external-link"><code>R/causalsim_draw.R</code></a></small>
       <div class="d-none name"><code>causalsim_draw.Rd</code></div>
     </div>
 
@@ -73,10 +73,10 @@ named to match the spec (e.g. <code>W</code>, <code>W1</code>, <code>Z</code>).<
 <dd><p>Observed outcome.</p></dd>
 
 <dt><code>.tau</code></dt>
-<dd><p>Individual treatment effect (CATE) — ground truth.</p></dd>
+<dd><p>Individual treatment effect (CATE). Ground truth.</p></dd>
 
 <dt><code>.p</code></dt>
-<dd><p>Individual propensity score — ground truth.</p></dd>
+<dd><p>Individual propensity score. Ground truth.</p></dd>
 
 
 </dl><p>The <code>.tau</code> and <code>.p</code> columns carry individual-level ground truth and are

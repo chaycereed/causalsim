@@ -11,7 +11,7 @@ covar() objects (Option A), or both combined."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">causalsim</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -35,7 +35,7 @@ covar() objects (Option A), or both combined."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Create a causal data generating process</h1>
-
+      <small class="dont-index">Source: <a href="https://github.com/chaycereed/causalsim/blob/main/R/causalsim_dgp.R" class="external-link"><code>R/causalsim_dgp.R</code></a></small>
       <div class="d-none name"><code>causalsim_dgp.Rd</code></div>
     </div>
 
@@ -72,7 +72,7 @@ via shorthand count arguments (Option B), an explicit named list of
 
 <dt id="arg-effect">effect<a class="anchor" aria-label="anchor" href="#arg-effect"></a></dt>
 <dd><p>Numeric scalar or function. A scalar specifies a constant
-(homogeneous) treatment effect — ATE = CATE everywhere. A function should
+(homogeneous) treatment effect; ATE = CATE everywhere. A function should
 accept named arguments matching covariate names defined in the DGP and
 return a numeric vector of individual-level causal effects (CATE).
 See Details.</p></dd>
@@ -152,7 +152,7 @@ approximation. Default <code>10000L</code>. Ignored for scalar <code>effect</cod
 <dd><p>Outcome noise standard deviation</p></dd>
 
 <dt><code>true_ate</code></dt>
-<dd><p>True ATE — exact for scalar, MC approximation otherwise</p></dd>
+<dd><p>True ATE: exact for scalar, MC approximation otherwise</p></dd>
 
 <dt><code>heterogeneous</code></dt>
 <dd><p>Logical; <code>TRUE</code> if <code>effect</code> was a function</p></dd>
@@ -181,7 +181,7 @@ approximation. Default <code>10000L</code>. Ignored for scalar <code>effect</cod
 
 
 <p>The <code>effect</code>, <code>propensity</code>, and <code>baseline</code> functions are called with named
-arguments matching covariate names — not a data frame. Write:</p>
+arguments matching covariate names, not a data frame. Write:</p>
 <p></p><div class="sourceCode r"><pre><code><span><span class="va">effect</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">W</span><span class="op">)</span> <span class="fl">2</span> <span class="op">+</span> <span class="fl">1.5</span> <span class="op">*</span> <span class="va">W</span></span>
 <span><span class="va">propensity</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">W1</span>, <span class="va">W2</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/stats/Logistic.html" class="external-link">plogis</a></span><span class="op">(</span><span class="fl">0.3</span> <span class="op">*</span> <span class="va">W1</span> <span class="op">+</span> <span class="fl">0.5</span> <span class="op">*</span> <span class="va">W2</span><span class="op">)</span></span></code></pre><p></p></div>
 <p>Every argument name is validated against the DGP's covariate spec at
@@ -221,18 +221,18 @@ distribution.</p>
 <span class="r-in"><span>    W <span class="op">=</span> <span class="fu"><a href="covar.html">covar</a></span><span class="op">(</span><span class="st">"normal"</span>, role <span class="op">=</span> <span class="st">"confounder"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>    V <span class="op">=</span> <span class="fu"><a href="covar.html">covar</a></span><span class="op">(</span><span class="st">"binary"</span>, role <span class="op">=</span> <span class="st">"effect_modifier"</span>, prob <span class="op">=</span> <span class="fl">0.4</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span>,</span></span>
-<span class="r-in"><span>  effect     <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">V</span><span class="op">)</span> <span class="fl">2</span> <span class="op">+</span> <span class="fl">1.5</span> <span class="op">*</span> <span class="va">V</span>,</span></span>
+<span class="r-in"><span>  effect <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">V</span><span class="op">)</span> <span class="fl">2</span> <span class="op">+</span> <span class="fl">1.5</span> <span class="op">*</span> <span class="va">V</span>,</span></span>
 <span class="r-in"><span>  propensity <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">W</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/stats/Logistic.html" class="external-link">plogis</a></span><span class="op">(</span><span class="fl">0.5</span> <span class="op">*</span> <span class="va">W</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  baseline   <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">W</span><span class="op">)</span> <span class="fl">1.5</span> <span class="op">*</span> <span class="va">W</span></span></span>
+<span class="r-in"><span>  baseline <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">W</span><span class="op">)</span> <span class="fl">1.5</span> <span class="op">*</span> <span class="va">W</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Mixed: shorthand confounders + explicit instrument + RCT propensity</span></span></span>
 <span class="r-in"><span><span class="va">dgp3</span> <span class="op">&lt;-</span> <span class="fu">causalsim_dgp</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  n <span class="op">=</span> <span class="fl">1000</span>,</span></span>
 <span class="r-in"><span>  n_confounders <span class="op">=</span> <span class="fl">2</span>,</span></span>
-<span class="r-in"><span>  covariates    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>Z <span class="op">=</span> <span class="fu"><a href="covar.html">covar</a></span><span class="op">(</span><span class="st">"normal"</span>, role <span class="op">=</span> <span class="st">"instrument"</span><span class="op">)</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  effect        <span class="op">=</span> <span class="fl">1</span>,</span></span>
-<span class="r-in"><span>  propensity    <span class="op">=</span> <span class="fl">0.5</span></span></span>
+<span class="r-in"><span>  covariates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>Z <span class="op">=</span> <span class="fu"><a href="covar.html">covar</a></span><span class="op">(</span><span class="st">"normal"</span>, role <span class="op">=</span> <span class="st">"instrument"</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  effect <span class="op">=</span> <span class="fl">1</span>,</span></span>
+<span class="r-in"><span>  propensity <span class="op">=</span> <span class="fl">0.5</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

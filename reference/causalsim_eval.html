@@ -11,7 +11,7 @@ estimator performance against the known ground truth."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">causalsim</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -35,7 +35,7 @@ estimator performance against the known ground truth."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Evaluate a causal estimator against a known DGP</h1>
-
+      <small class="dont-index">Source: <a href="https://github.com/chaycereed/causalsim/blob/main/R/causalsim_eval.R" class="external-link"><code>R/causalsim_eval.R</code></a></small>
       <div class="d-none name"><code>causalsim_eval.Rd</code></div>
     </div>
 
@@ -136,8 +136,8 @@ numeric vector or one-row data frame with at minimum:</p>
 <code>true_ate</code>. Requires <code>ci_lower</code> and <code>ci_upper</code>.</p></dd>
 
 <dt><code>"power"</code></dt>
-<dd><p>Proportion of replications where the CI excludes zero
-— i.e., the rejection rate of H0: ATE = 0. When <code>true_ate != 0</code>,
+<dd><p>Proportion of replications where the CI excludes zero,
+i.e., the rejection rate of H0: ATE = 0. When <code>true_ate != 0</code>,
 this is power; when <code>true_ate == 0</code>, it is the Type I error rate.
 Requires <code>ci_lower</code> and <code>ci_upper</code>.</p></dd>
 
@@ -170,6 +170,7 @@ for custom analysis or plotting.</p>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>estimate <span class="op">=</span> <span class="va">est</span>, ci_lower <span class="op">=</span> <span class="va">est</span> <span class="op">-</span> <span class="fl">1.96</span> <span class="op">*</span> <span class="va">se</span>, ci_upper <span class="op">=</span> <span class="va">est</span> <span class="op">+</span> <span class="fl">1.96</span> <span class="op">*</span> <span class="va">se</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">causalsim_eval</span><span class="op">(</span><span class="va">dgp</span>, <span class="va">ols_estimator</span>, reps <span class="op">=</span> <span class="fl">100L</span>, seed <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">result</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;causalsim_eval&gt;  reps: 100  true ATE: 2</span>
@@ -179,6 +180,7 @@ for custom analysis or plotting.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      rmse  0.1295 0.00723</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  coverage  0.9300 0.02551</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     power  1.0000 0.00000</span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

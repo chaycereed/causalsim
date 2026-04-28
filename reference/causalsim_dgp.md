@@ -33,7 +33,7 @@ causalsim_dgp(
 - effect:
 
   Numeric scalar or function. A scalar specifies a constant
-  (homogeneous) treatment effect — ATE = CATE everywhere. A function
+  (homogeneous) treatment effect; ATE = CATE everywhere. A function
   should accept named arguments matching covariate names defined in the
   DGP and return a numeric vector of individual-level causal effects
   (CATE). See Details.
@@ -126,7 +126,7 @@ An S3 object of class `causalsim_dgp` with components:
 
 - `true_ate`:
 
-  True ATE — exact for scalar, MC approximation otherwise
+  True ATE: exact for scalar, MC approximation otherwise
 
 - `heterogeneous`:
 
@@ -150,7 +150,7 @@ built-in `T` alias.
 ### Function calling convention
 
 The `effect`, `propensity`, and `baseline` functions are called with
-named arguments matching covariate names — not a data frame. Write:
+named arguments matching covariate names, not a data frame. Write:
 
     effect = function(W) 2 + 1.5 * W
     propensity = function(W1, W2) plogis(0.3 * W1 + 0.5 * W2)
@@ -187,17 +187,17 @@ dgp2 <- causalsim_dgp(
     W = covar("normal", role = "confounder"),
     V = covar("binary", role = "effect_modifier", prob = 0.4)
   ),
-  effect     = function(V) 2 + 1.5 * V,
+  effect = function(V) 2 + 1.5 * V,
   propensity = function(W) plogis(0.5 * W),
-  baseline   = function(W) 1.5 * W
+  baseline = function(W) 1.5 * W
 )
 
 # Mixed: shorthand confounders + explicit instrument + RCT propensity
 dgp3 <- causalsim_dgp(
   n = 1000,
   n_confounders = 2,
-  covariates    = list(Z = covar("normal", role = "instrument")),
-  effect        = 1,
-  propensity    = 0.5
+  covariates = list(Z = covar("normal", role = "instrument")),
+  effect = 1,
+  propensity = 0.5
 )
 ```
