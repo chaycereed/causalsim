@@ -23,6 +23,7 @@ ground truth and evaluating estimator performance against them.
 Requires R 4.0 or higher. Install from GitHub:
 
 ``` r
+
 # install.packages("devtools")
 devtools::install_github("chaycereed/causalsim")
 ```
@@ -36,6 +37,7 @@ specifies the structural model. Parameters can be scalars, preset
 strings, or functions of the covariate names.
 
 ``` r
+
 library(causalsim)
 
 dgp <- causalsim_dgp(
@@ -56,6 +58,7 @@ covariate columns, treatment `A`, outcome `Y`, individual effect `.tau`,
 and propensity `.p`.
 
 ``` r
+
 dat <- causalsim_draw(dgp, seed = 1L)
 head(dat)
 ```
@@ -67,6 +70,7 @@ named numeric vector with at minimum an `estimate` field. `ci_lower` and
 `ci_upper` enable coverage and power metrics.
 
 ``` r
+
 ols_est <- function(data) {
   fit <- lm(Y ~ A + W, data = data)
   est <- coef(fit)[["A"]]
@@ -88,6 +92,7 @@ runs the evaluator over the Cartesian product of any DGP parameters,
 returning a tidy data frame of metrics for each cell.
 
 ``` r
+
 grid_result <- causalsim_grid(
   dgp       = dgp,
   estimator = ols_est,

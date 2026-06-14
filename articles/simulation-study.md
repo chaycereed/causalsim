@@ -9,14 +9,15 @@ you measure how well any estimator recovers the truth you specified.
 
 ### What this vignette covers
 
-| Step | Function                                                                                 | What it does                                         |
-|------|------------------------------------------------------------------------------------------|------------------------------------------------------|
-| 1    | [`causalsim_dgp()`](https://chaycereed.github.io/causalsim/reference/causalsim_dgp.md)   | Define the structural model and true ATE             |
-| 2    | [`causalsim_draw()`](https://chaycereed.github.io/causalsim/reference/causalsim_draw.md) | Simulate one dataset and inspect it                  |
-| 3    | [`causalsim_eval()`](https://chaycereed.github.io/causalsim/reference/causalsim_eval.md) | Measure estimator performance over many replications |
-| 4    | [`causalsim_grid()`](https://chaycereed.github.io/causalsim/reference/causalsim_grid.md) | Sweep over sample sizes and confounding levels       |
+| Step | Function | What it does |
+|----|----|----|
+| 1 | [`causalsim_dgp()`](https://chaycereed.github.io/causalsim/reference/causalsim_dgp.md) | Define the structural model and true ATE |
+| 2 | [`causalsim_draw()`](https://chaycereed.github.io/causalsim/reference/causalsim_draw.md) | Simulate one dataset and inspect it |
+| 3 | [`causalsim_eval()`](https://chaycereed.github.io/causalsim/reference/causalsim_eval.md) | Measure estimator performance over many replications |
+| 4 | [`causalsim_grid()`](https://chaycereed.github.io/causalsim/reference/causalsim_grid.md) | Sweep over sample sizes and confounding levels |
 
 ``` r
+
 library(causalsim)
 ```
 
@@ -26,7 +27,12 @@ library(causalsim)
 
 The structural model for this study is:
 
-$$W \sim N(0,1),\quad A \mid W \sim \text{Bernoulli}\!\left( \text{logistic}(0.5\, W) \right),\quad Y = 2A + 0.5W + \varepsilon,\quad\varepsilon \sim N(0,1)$$
+``` math
+W \sim N(0,1), \quad
+A \mid W \sim \text{Bernoulli}\!\left(\text{logistic}(0.5\,W)\right), \quad
+Y = 2A + 0.5W + \varepsilon, \quad
+\varepsilon \sim N(0,1)
+```
 
 In
 [`causalsim_dgp()`](https://chaycereed.github.io/causalsim/reference/causalsim_dgp.md)
@@ -35,6 +41,7 @@ propensity confounding (logistic coefficient 0.5), and a moderate
 baseline shift.
 
 ``` r
+
 dgp <- causalsim_dgp(
   n             = 500,
   n_confounders = 1,
@@ -67,6 +74,7 @@ individual causal effect and propensity score, diagnostic metadata that
 is not available in real observational data.
 
 ``` r
+
 dat <- causalsim_draw(dgp, seed = 1L)
 head(dat)
 #>            W A          Y .tau        .p
@@ -82,6 +90,7 @@ With moderate confounding, the treated and control groups differ on the
 pre-treatment covariate:
 
 ``` r
+
 aggregate(W ~ A, data = dat, FUN = mean)
 #>   A          W
 #> 1 0 -0.2440553
@@ -102,6 +111,7 @@ and returns a named numeric vector. The `ci_lower` and `ci_upper` fields
 are optional but enable coverage and power metrics.
 
 ``` r
+
 # Naive: regresses Y on A only, omits the confounder
 naive_est <- function(data) {
   fit <- lm(Y ~ A, data = data)
@@ -122,6 +132,7 @@ ols_est <- function(data) {
 Named lists are also accepted, so the following is equivalent:
 
 ``` r
+
 ols_est <- function(data) {
   fit <- lm(Y ~ A + W, data = data)
   ci  <- confint(fit)["A", ]
@@ -142,6 +153,7 @@ runs `reps` independent replications and returns a tidy summary of bias,
 RMSE, coverage, and power with Monte Carlo standard errors.
 
 ``` r
+
 eval_naive <- causalsim_eval(dgp, naive_est, reps = 300L, seed = 1L)
 eval_naive
 #> <causalsim_eval>  reps: 300  true ATE: 2
@@ -154,6 +166,7 @@ eval_naive
 ```
 
 ``` r
+
 eval_ols <- causalsim_eval(dgp, ols_est, reps = 300L, seed = 1L)
 eval_ols
 #> <causalsim_eval>  reps: 300  true ATE: 2
@@ -166,11 +179,11 @@ eval_ols
 ```
 
 The naive estimator’s bias is substantial: treatment is positively
-correlated with $W$, which also raises $Y$ through the baseline, so the
-unadjusted coefficient absorbs part of that association. OLS eliminates
-the bias by conditioning on $W$. Coverage for the naive estimator falls
-well below the nominal 95% because the confidence intervals are centered
-on the wrong value.
+correlated with $`W`$, which also raises $`Y`$ through the baseline, so
+the unadjusted coefficient absorbs part of that association. OLS
+eliminates the bias by conditioning on $`W`$. Coverage for the naive
+estimator falls well below the nominal 95% because the confidence
+intervals are centered on the wrong value.
 
 [`summary()`](https://rdrr.io/r/base/summary.html) adds the full
 distribution of per-replication estimates, and
@@ -178,6 +191,7 @@ distribution of per-replication estimates, and
 histogram:
 
 ``` r
+
 summary(eval_ols)
 #> <causalsim_eval_summary>  reps: 300  true ATE: 2
 #> 
@@ -196,6 +210,7 @@ summary(eval_ols)
 ```
 
 ``` r
+
 plot(eval_ols)
 ```
 
@@ -217,6 +232,7 @@ Here we vary `n` across four levels to track how the OLS estimator’s
 precision improves with more data.
 
 ``` r
+
 grid_n <- causalsim_grid(
   dgp       = dgp,
   estimator = ols_est,
@@ -240,9 +256,9 @@ grid_n
 #>  1000   rmse  0.064648194 0.002489179
 ```
 
-RMSE roughly halves as $n$ quadruples, consistent with $\sqrt{n}$-rate
-convergence for OLS in a correctly specified model. Bias stays near zero
-at every sample size.
+RMSE roughly halves as $`n`$ quadruples, consistent with
+$`\sqrt{n}`$-rate convergence for OLS in a correctly specified model.
+Bias stays near zero at every sample size.
 
 ------------------------------------------------------------------------
 
@@ -255,6 +271,7 @@ accepts one estimator at a time, we run it separately and combine the
 results.
 
 ``` r
+
 conf_levels <- list(propensity = c("low", "moderate", "high"))
 
 grid_naive <- causalsim_grid(dgp, naive_est,
@@ -286,7 +303,7 @@ comparison
 ```
 
 Naive bias grows proportionally with confounding strength. OLS remains
-near zero across all three levels because $W$ is observed and included
+near zero across all three levels because $`W`$ is observed and included
 in the model.
 
 ------------------------------------------------------------------------
@@ -296,12 +313,12 @@ in the model.
 This workflow (define, evaluate, grid) scales to more complex settings.
 A few directions:
 
-| Goal                       | How                                                                                                                   |
-|----------------------------|-----------------------------------------------------------------------------------------------------------------------|
-| Heterogeneous effects      | Pass a function to `effect` in [`causalsim_dgp()`](https://chaycereed.github.io/causalsim/reference/causalsim_dgp.md) |
-| Non-normal covariates      | Use `covar("binary")` or `covar("uniform")` in `covariates`                                                           |
-| Multiple confounders       | Set `n_confounders = 3` or pass named `covariates`                                                                    |
-| Custom covariate structure | Mix `n_confounders` with explicit `covariates = list(...)`                                                            |
+| Goal | How |
+|----|----|
+| Heterogeneous effects | Pass a function to `effect` in [`causalsim_dgp()`](https://chaycereed.github.io/causalsim/reference/causalsim_dgp.md) |
+| Non-normal covariates | Use `covar("binary")` or `covar("uniform")` in `covariates` |
+| Multiple confounders | Set `n_confounders = 3` or pass named `covariates` |
+| Custom covariate structure | Mix `n_confounders` with explicit `covariates = list(...)` |
 
 See
 [`?causalsim_dgp`](https://chaycereed.github.io/causalsim/reference/causalsim_dgp.md)
@@ -314,6 +331,7 @@ for the full API.
 ## Session info
 
 ``` r
+
 sessionInfo()
 #> R version 4.6.0 (2026-04-24)
 #> Platform: x86_64-pc-linux-gnu
@@ -340,10 +358,10 @@ sessionInfo()
 #> 
 #> loaded via a namespace (and not attached):
 #>  [1] digest_0.6.39     desc_1.4.3        R6_2.6.1          fastmap_1.2.0    
-#>  [5] xfun_0.57         cachem_1.1.0      knitr_1.51        htmltools_0.5.9  
+#>  [5] xfun_0.58         cachem_1.1.0      knitr_1.51        htmltools_0.5.9  
 #>  [9] rmarkdown_2.31    lifecycle_1.0.5   cli_3.6.6         sass_0.4.10      
 #> [13] pkgdown_2.2.0     textshaping_1.0.5 jquerylib_0.1.4   systemfonts_1.3.2
-#> [17] compiler_4.6.0    tools_4.6.0       ragg_1.5.2        evaluate_1.0.5   
-#> [21] bslib_0.10.0      yaml_2.3.12       jsonlite_2.0.0    rlang_1.2.0      
-#> [25] fs_2.1.0
+#> [17] compiler_4.6.0    tools_4.6.0       ragg_1.5.2        bslib_0.11.0     
+#> [21] evaluate_1.0.5    yaml_2.3.12       otel_0.2.0        jsonlite_2.0.0   
+#> [25] rlang_1.2.0       fs_2.1.0
 ```
