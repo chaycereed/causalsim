@@ -185,9 +185,9 @@ causalsim_dgp <- function(
 #' @export
 print.causalsim_dgp <- function(x, ...) {
   cat("<causalsim_dgp>\n")
-  cat(sprintf("  n            : %d\n",   x$n))
+  cat(sprintf("  n            : %d\n", x$n))
   cat(sprintf("  true ATE     : %.4f\n", x$true_ate))
-  cat(sprintf("  heterogeneous: %s\n",   x$heterogeneous))
+  cat(sprintf("  heterogeneous: %s\n", x$heterogeneous))
   cat(sprintf("  sigma        : %.2f\n", x$sigma))
   if (length(x$covar_spec) > 0L) {
     cat("  covariates   :\n")

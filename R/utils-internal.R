@@ -109,7 +109,7 @@
 # Propensity uses plogis(); baseline uses a linear sum.
 .fn_presets <- list(
   propensity = c(low = 0.25, moderate = 0.5, high = 1.0),
-  baseline   = c(low = 0.25, moderate = 0.5, high = 1.0)
+  baseline = c(low = 0.25, moderate = 0.5, high = 1.0)
 )
 
 # Resolve a preset string to a closure over the covariate spec.

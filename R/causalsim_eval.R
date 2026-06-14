@@ -135,9 +135,9 @@ print.causalsim_eval <- function(x, digits = 4L, ...) {
     "<causalsim_eval>  reps: %d  true ATE: %s\n\n",
     x$reps, format(round(x$true_ate, digits))
   ))
-  m      <- x$metrics
+  m <- x$metrics
   m$value <- round(m$value, digits)
-  m$se    <- round(m$se,    digits + 1L)
+  m$se <- round(m$se, digits + 1L)
   print(m, row.names = FALSE)
   invisible(x)
 }
@@ -188,16 +188,16 @@ print.causalsim_eval_summary <- function(x, digits = 4L, ...) {
     x$reps, format(round(x$true_ate, digits))
   ))
   cat("Estimate distribution:\n")
-  cat(sprintf("  mean  : %s\n",         format(round(x$mean_estimate,   digits))))
-  cat(sprintf("  sd    : %s\n",         format(round(x$sd_estimate,     digits))))
-  cat(sprintf("  median: %s\n",         format(round(x$median_estimate, digits))))
+  cat(sprintf("  mean  : %s\n", format(round(x$mean_estimate, digits))))
+  cat(sprintf("  sd    : %s\n", format(round(x$sd_estimate, digits))))
+  cat(sprintf("  median: %s\n", format(round(x$median_estimate, digits))))
   cat(sprintf("  [p10, p90]: [%s, %s]\n\n",
               format(round(x$p10_estimate, digits)),
               format(round(x$p90_estimate, digits))))
   cat("Metrics:\n")
-  m        <- x$metrics
-  m$value  <- round(m$value, digits)
-  m$se     <- round(m$se,    digits + 1L)
+  m <- x$metrics
+  m$value <- round(m$value, digits)
+  m$se <- round(m$se, digits + 1L)
   print(m, row.names = FALSE)
   invisible(x)
 }
