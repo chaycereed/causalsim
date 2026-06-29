@@ -7,10 +7,26 @@ gives you that by making the data-generating process explicit: you
 specify the structural model, the package simulates data from it, and
 you measure how well any estimator recovers the truth you specified.
 
+If you only need a single dataset with known ground truth,
+[`causalsim()`](https://chaycereed.github.io/causalsim/reference/causalsim.md)
+does it in one call:
+
+``` r
+
+data <- causalsim(n = 500, n_confounders = 1, effect = 2, seed = 1L)
+head(data)
+```
+
+The columns `.tau` and `.p` carry the ground truth for whatever analysis
+you run on the data. This vignette goes further: defining a DGP
+explicitly, evaluating estimator performance over many replications, and
+sweeping across a parameter grid.
+
 ### What this vignette covers
 
 | Step | Function | What it does |
 |----|----|----|
+| 0 | [`causalsim()`](https://chaycereed.github.io/causalsim/reference/causalsim.md) | Simulate one dataset in a single call |
 | 1 | [`causalsim_dgp()`](https://chaycereed.github.io/causalsim/reference/causalsim_dgp.md) | Define the structural model and true ATE |
 | 2 | [`causalsim_draw()`](https://chaycereed.github.io/causalsim/reference/causalsim_draw.md) | Simulate one dataset and inspect it |
 | 3 | [`causalsim_eval()`](https://chaycereed.github.io/causalsim/reference/causalsim_eval.md) | Measure estimator performance over many replications |
@@ -315,13 +331,15 @@ A few directions:
 
 | Goal | How |
 |----|----|
+| Just generate data | Use [`causalsim()`](https://chaycereed.github.io/causalsim/reference/causalsim.md) for a single dataset in one call |
 | Heterogeneous effects | Pass a function to `effect` in [`causalsim_dgp()`](https://chaycereed.github.io/causalsim/reference/causalsim_dgp.md) |
 | Non-normal covariates | Use `covar("binary")` or `covar("uniform")` in `covariates` |
 | Multiple confounders | Set `n_confounders = 3` or pass named `covariates` |
 | Custom covariate structure | Mix `n_confounders` with explicit `covariates = list(...)` |
 
 See
-[`?causalsim_dgp`](https://chaycereed.github.io/causalsim/reference/causalsim_dgp.md)
+[`?causalsim`](https://chaycereed.github.io/causalsim/reference/causalsim.md),
+[`?causalsim_dgp`](https://chaycereed.github.io/causalsim/reference/causalsim_dgp.md),
 and
 [`?covar`](https://chaycereed.github.io/causalsim/reference/covar.md)
 for the full API.
@@ -333,7 +351,7 @@ for the full API.
 ``` r
 
 sessionInfo()
-#> R version 4.6.0 (2026-04-24)
+#> R version 4.6.1 (2026-06-24)
 #> Platform: x86_64-pc-linux-gnu
 #> Running under: Ubuntu 24.04.4 LTS
 #> 
@@ -358,10 +376,10 @@ sessionInfo()
 #> 
 #> loaded via a namespace (and not attached):
 #>  [1] digest_0.6.39     desc_1.4.3        R6_2.6.1          fastmap_1.2.0    
-#>  [5] xfun_0.58         cachem_1.1.0      knitr_1.51        htmltools_0.5.9  
+#>  [5] xfun_0.59         cachem_1.1.0      knitr_1.51        htmltools_0.5.9  
 #>  [9] rmarkdown_2.31    lifecycle_1.0.5   cli_3.6.6         sass_0.4.10      
 #> [13] pkgdown_2.2.0     textshaping_1.0.5 jquerylib_0.1.4   systemfonts_1.3.2
-#> [17] compiler_4.6.0    tools_4.6.0       ragg_1.5.2        bslib_0.11.0     
+#> [17] compiler_4.6.1    tools_4.6.1       ragg_1.5.2        bslib_0.11.0     
 #> [21] evaluate_1.0.5    yaml_2.3.12       otel_0.2.0        jsonlite_2.0.0   
 #> [25] rlang_1.2.0       fs_2.1.0
 ```

@@ -4,6 +4,11 @@
 
 Initial CRAN release.
 
+- [`causalsim()`](https://chaycereed.github.io/causalsim/reference/causalsim.md)
+  for simulating a dataset in a single call (convenience wrapper around
+  [`causalsim_dgp()`](https://chaycereed.github.io/causalsim/reference/causalsim_dgp.md)
+  and
+  [`causalsim_draw()`](https://chaycereed.github.io/causalsim/reference/causalsim_draw.md))
 - [`causalsim_dgp()`](https://chaycereed.github.io/causalsim/reference/causalsim_dgp.md)
   for defining causal data generating processes with known ground truth
 - [`causalsim_draw()`](https://chaycereed.github.io/causalsim/reference/causalsim_draw.md)

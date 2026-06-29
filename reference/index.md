@@ -2,6 +2,8 @@
 
 ## Core functions
 
+- [`causalsim()`](https://chaycereed.github.io/causalsim/reference/causalsim.md)
+  : Simulate a causal dataset with known ground truth
 - [`causalsim_dgp()`](https://chaycereed.github.io/causalsim/reference/causalsim_dgp.md)
   : Create a causal data generating process
 - [`covar()`](https://chaycereed.github.io/causalsim/reference/covar.md)

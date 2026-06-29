@@ -30,6 +30,27 @@ devtools::install_github("chaycereed/causalsim")
 
 ## Usage
 
+### Quick start
+
+[`causalsim()`](https://chaycereed.github.io/causalsim/reference/causalsim.md)
+generates a dataset in one call. The returned data frame includes
+covariate columns, treatment `A`, outcome `Y`, individual effect `.tau`,
+and true propensity `.p`.
+
+``` r
+
+library(causalsim)
+
+data <- causalsim(n = 500, n_confounders = 1, effect = 2, seed = 1L)
+head(data)
+```
+
+For estimator benchmarking or multi-draw workflows, use
+[`causalsim_dgp()`](https://chaycereed.github.io/causalsim/reference/causalsim_dgp.md)
+and
+[`causalsim_draw()`](https://chaycereed.github.io/causalsim/reference/causalsim_draw.md)
+directly (see below).
+
 ### Define a data generating process
 
 [`causalsim_dgp()`](https://chaycereed.github.io/causalsim/reference/causalsim_dgp.md)
@@ -37,8 +58,6 @@ specifies the structural model. Parameters can be scalars, preset
 strings, or functions of the covariate names.
 
 ``` r
-
-library(causalsim)
 
 dgp <- causalsim_dgp(
   n             = 500,
