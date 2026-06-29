@@ -2,7 +2,6 @@
 % Please edit documentation in R/causalsim-package.R
 \docType{package}
 \name{causalsim-package}
-\alias{causalsim}
 \alias{causalsim-package}
 \title{causalsim: Simulation-Ready Causal Data Generating Processes}
 \description{

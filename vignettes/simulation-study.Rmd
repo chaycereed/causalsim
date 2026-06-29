@@ -68,10 +68,24 @@ that by making the data-generating process explicit: you specify the structural
 model, the package simulates data from it, and you measure how well any estimator
 recovers the truth you specified.
 
+If you only need a single dataset with known ground truth, `causalsim()` does it
+in one call:
+
+```r
+data <- causalsim(n = 500, n_confounders = 1, effect = 2, seed = 1L)
+head(data)
+```
+
+The columns `.tau` and `.p` carry the ground truth for whatever analysis you run
+on the data. This vignette goes further: defining a DGP explicitly, evaluating
+estimator performance over many replications, and sweeping across a parameter
+grid.
+
 ### What this vignette covers
 
 | Step | Function | What it does |
 |---|---|---|
+| 0 | `causalsim()` | Simulate one dataset in a single call |
 | 1 | `causalsim_dgp()` | Define the structural model and true ATE |
 | 2 | `causalsim_draw()` | Simulate one dataset and inspect it |
 | 3 | `causalsim_eval()` | Measure estimator performance over many replications |
@@ -284,12 +298,13 @@ directions:
 
 | Goal | How |
 |---|---|
+| Just generate data | Use `causalsim()` for a single dataset in one call |
 | Heterogeneous effects | Pass a function to `effect` in `causalsim_dgp()` |
 | Non-normal covariates | Use `covar("binary")` or `covar("uniform")` in `covariates` |
 | Multiple confounders | Set `n_confounders = 3` or pass named `covariates` |
 | Custom covariate structure | Mix `n_confounders` with explicit `covariates = list(...)` |
 
-See `?causalsim_dgp` and `?covar` for the full API.
+See `?causalsim`, `?causalsim_dgp`, and `?covar` for the full API.
 
 ---
 

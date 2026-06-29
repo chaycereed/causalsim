@@ -2,6 +2,7 @@
 
 Initial CRAN release.
 
+- `causalsim()` for simulating a dataset in a single call (convenience wrapper around `causalsim_dgp()` and `causalsim_draw()`)
 - `causalsim_dgp()` for defining causal data generating processes with known ground truth
 - `causalsim_draw()` for simulating individual datasets from a DGP
 - `causalsim_eval()` for evaluating estimator performance over repeated replications

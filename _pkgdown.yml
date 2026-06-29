@@ -60,6 +60,7 @@ navbar:
 reference:
   - title: "Core functions"
     contents:
+      - causalsim
       - causalsim_dgp
       - covar
       - causalsim_draw
