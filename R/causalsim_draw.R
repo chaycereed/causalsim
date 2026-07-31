@@ -44,7 +44,7 @@ causalsim_draw <- function(dgp, seed = NULL) {
   }
   if (!is.null(seed)) set.seed(seed)
 
-  n      <- dgp$n
+  n <- dgp$n
   cov_df <- .generate_covariate_data(dgp$covar_spec, n)
 
   p <- .apply_effect(dgp$propensity_fn, cov_df, n = n)
@@ -52,7 +52,7 @@ causalsim_draw <- function(dgp, seed = NULL) {
   mu <- .apply_effect(dgp$baseline_fn, cov_df, n = n)
   tau <- .apply_effect(dgp$effect_fn, cov_df, n = n)
   eps <- stats::rnorm(n, mean = 0, sd = dgp$sigma)
-  y   <- mu + tau * a + eps
+  y <- mu + tau * a + eps
 
   if (length(dgp$covar_spec) > 0L) {
     data.frame(cov_df, A = a, Y = y, .tau = tau, .p = p,

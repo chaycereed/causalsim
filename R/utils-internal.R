@@ -34,10 +34,10 @@
 .build_covariate_spec <- function(n_confounders, n_effect_modifiers,
                                    n_instruments, n_noise, covariates) {
   auto <- c(
-    .auto_covariates(n_confounders,      "confounder",      "W"),
+    .auto_covariates(n_confounders, "confounder", "W"),
     .auto_covariates(n_effect_modifiers, "effect_modifier", "V"),
-    .auto_covariates(n_instruments,      "instrument",      "Z"),
-    .auto_covariates(n_noise,            "noise",           "X")
+    .auto_covariates(n_instruments, "instrument", "Z"),
+    .auto_covariates(n_noise, "noise", "X")
   )
 
   if (!is.list(covariates)) {
@@ -134,7 +134,7 @@
     )
   }
 
-  coeff         <- unname(table[[x]])
+  coeff <- unname(table[[x]])
   confounder_nms <- names(
     Filter(function(cv) "confounder" %in% cv$role, covar_spec)
   )
@@ -146,13 +146,13 @@
   }
 
   # Return closure capturing coeff and confounder names
-  coeff_         <- coeff
+  coeff_ <- coeff
   confounder_nms_ <- confounder_nms
   if (type == "propensity") {
     function(...) {
       args <- list(...)
       terms <- lapply(confounder_nms_, function(nm) coeff_ * args[[nm]])
-      lin   <- Reduce(`+`, terms)
+      lin <- Reduce(`+`, terms)
       stats::plogis(lin)
     }
   } else {
@@ -194,9 +194,9 @@
 #
 # The `n` argument is used when covariate_df has 0 rows (no-covariate DGPs).
 .apply_effect <- function(effect_fn, covariate_df, n = nrow(covariate_df)) {
-  fn_formals  <- names(formals(effect_fn))
-  has_dots    <- "..." %in% fn_formals
-  named_args  <- setdiff(fn_formals, "...")
+  fn_formals <- names(formals(effect_fn))
+  has_dots <- "..." %in% fn_formals
+  named_args <- setdiff(fn_formals, "...")
 
   result <- if (!has_dots && length(named_args) == 0L) {
     effect_fn()
@@ -324,8 +324,8 @@
 .collect_draws <- function(dgp, estimator, reps) {
   rows <- vector("list", reps)
   for (i in seq_len(reps)) {
-    data    <- causalsim_draw(dgp)
-    est     <- .call_estimator(estimator, data)
+    data <- causalsim_draw(dgp)
+    est <- .call_estimator(estimator, data)
     rows[[i]] <- as.list(est)
   }
   # Bind rows; missing fields (e.g. ci_lower absent in some reps) become NA
@@ -343,22 +343,22 @@
 # Compute requested metrics from a draws data frame and the true ATE.
 # Returns a tidy data frame: metric | value | se
 .compute_metrics <- function(draws, true_ate, metrics) {
-  est  <- draws[["estimate"]]
+  est <- draws[["estimate"]]
   errs <- est - true_ate
 
   rows <- lapply(metrics, function(m) {
     switch(m,
       bias = {
         val <- mean(errs)
-        se  <- stats::sd(est) / sqrt(length(est))
+        se <- stats::sd(est) / sqrt(length(est))
         data.frame(metric = "bias", value = val, se = se,
                    stringsAsFactors = FALSE)
       },
       rmse = {
-        sq  <- errs^2
+        sq <- errs^2
         val <- sqrt(mean(sq))
         # Delta method: SE(sqrt(mean(X))) ≈ SD(X) / (2*sqrt(mean(X))*sqrt(n))
-        se  <- if (val > 0) {
+        se <- if (val > 0) {
           stats::sd(sq) / (2 * val * sqrt(length(sq)))
         } else {
           0
@@ -368,15 +368,15 @@
       },
       coverage = {
         covered <- draws[["ci_lower"]] <= true_ate &
-                   true_ate            <= draws[["ci_upper"]]
-        p   <- mean(covered)
-        se  <- sqrt(p * (1 - p) / length(covered))
+                   true_ate <= draws[["ci_upper"]]
+        p <- mean(covered)
+        se <- sqrt(p * (1 - p) / length(covered))
         data.frame(metric = "coverage", value = p, se = se,
                    stringsAsFactors = FALSE)
       },
       power = {
         rejected <- draws[["ci_lower"]] > 0 | draws[["ci_upper"]] < 0
-        p  <- mean(rejected)
+        p <- mean(rejected)
         se <- sqrt(p * (1 - p) / length(rejected))
         data.frame(metric = "power", value = p, se = se,
                    stringsAsFactors = FALSE)

@@ -115,8 +115,8 @@ causalsim_grid <- function(
       cell_params[[nm]] <- grid_df[[nm]][[i]]
     }
 
-    cell_dgp    <- do.call(causalsim_dgp, cell_params)
-    cell_eval   <- causalsim_eval(cell_dgp, estimator,
+    cell_dgp <- do.call(causalsim_dgp, cell_params)
+    cell_eval <- causalsim_eval(cell_dgp, estimator,
                                   reps = reps, metrics = metrics)
     cell_result <- cell_eval$metrics
 

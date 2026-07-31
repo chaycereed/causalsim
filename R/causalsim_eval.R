@@ -214,7 +214,7 @@ print.causalsim_eval_summary <- function(x, digits = 4L, ...) {
 #'
 #' @export
 plot.causalsim_eval <- function(x, ...) {
-  est      <- x$draws$estimate
+  est <- x$draws$estimate
   true_ate <- x$true_ate
   mean_est <- mean(est)
 

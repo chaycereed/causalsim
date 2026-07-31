@@ -2,8 +2,7 @@ Package: causalsim
 Title: Simulation-Ready Causal Data Generating Processes
 Version: 0.1.0
 Authors@R:
-    person("Chayce", "Reed", email = "code.jcr@gmail.com",
-           role = c("aut", "cre"))
+    person("Chayce", "Reed", email = "code.jcr@gmail.com", role = c("aut", "cre"))
 Description: Construct, simulate, and evaluate causal data generating processes
     (DGPs) with known ground truth. Designed for benchmarking causal estimators,
     stress-testing assumption violations, and building reproducible teaching
