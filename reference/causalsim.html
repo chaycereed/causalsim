@@ -51,7 +51,7 @@ in a single call.</p>
 <span>  <span class="va">n</span>,</span>
 <span>  effect <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  propensity <span class="op">=</span> <span class="st">"moderate"</span>,</span>
-<span>  baseline <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  baseline <span class="op">=</span> <span class="st">"moderate"</span>,</span>
 <span>  sigma <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  covariates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  n_confounders <span class="op">=</span> <span class="fl">0L</span>,</span>
@@ -91,7 +91,11 @@ a logistic propensity over confounders with coefficients 0.25, 0.5, and
 <dd><p>Numeric scalar, preset string, or function. Mean potential
 outcome under control, <code>E[Y(0) | W]</code>. Preset strings follow the same
 levels as <code>propensity</code> and apply a linear combination of confounders.
-Defaults to <code>0</code>.</p></dd>
+Defaults to <code>"moderate"</code>, so that confounders declared via <code>n_confounders</code>
+(or <code>role = "confounder"</code>) enter both the treatment and outcome models and
+therefore actually induce confounding bias. With no confounders present, any
+preset baseline resolves to <code>0</code>. Set a numeric scalar (e.g. <code>0</code>) for a
+constant baseline that ignores covariates.</p></dd>
 
 
 <dt id="arg-sigma">sigma<a class="anchor" aria-label="anchor" href="#arg-sigma"></a></dt>
@@ -156,12 +160,12 @@ benchmarking), use <code><a href="causalsim_dgp.html">causalsim_dgp()</a></code>
 <span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu">causalsim</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">500</span>, n_confounders <span class="op">=</span> <span class="fl">1</span>, effect <span class="op">=</span> <span class="fl">2</span>, seed <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>            W A          Y .tau        .p</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 -0.6264538 0 -1.4546914    2 0.4223273</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  0.1836433 0 -0.8456543    2 0.5229393</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 -0.8356286 0 -1.2504797    2 0.3970399</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  1.5952808 0  0.6672881    2 0.6894695</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5  0.3295078 1  0.7092303    2 0.5410956</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6 -0.8204684 0 -2.0350035    2 0.3988560</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 -0.6264538 0 -1.7679183    2 0.4223273</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  0.1836433 0 -0.7538327    2 0.5229393</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 -0.8356286 0 -1.6682940    2 0.3970399</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  1.5952808 0  1.4649285    2 0.6894695</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  0.3295078 1  0.8739842    2 0.5410956</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6 -0.8204684 0 -2.4452377    2 0.3988560</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Heterogeneous effect with an explicit covariate spec</span></span></span>
 <span class="r-in"><span><span class="va">data2</span> <span class="op">&lt;-</span> <span class="fu">causalsim</span><span class="op">(</span></span></span>
@@ -176,12 +180,12 @@ benchmarking), use <code><a href="causalsim_dgp.html">causalsim_dgp()</a></code>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">data2</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>            W V A         Y .tau        .p</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  1.3709584 1 1 5.8250585  3.5 0.6649605</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 -0.5646982 0 1 2.5241222  2.0 0.4298780</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  0.3631284 1 1 4.4707334  3.5 0.5452668</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  0.6328626 0 0 0.3769734  2.0 0.5784543</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5  0.4042683 0 1 1.0040666  2.0 0.5503622</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6 -0.1061245 0 1 1.4025171  2.0 0.4867375</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  1.3709584 1 1 6.5105377  3.5 0.6649605</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 -0.5646982 0 1 2.2417731  2.0 0.4298780</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  0.3631284 1 1 4.6522976  3.5 0.5452668</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  0.6328626 0 0 0.6934047  2.0 0.5784543</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  0.4042683 0 1 1.2062008  2.0 0.5503622</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6 -0.1061245 0 1 1.3494548  2.0 0.4867375</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

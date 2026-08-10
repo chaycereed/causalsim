@@ -14,7 +14,7 @@ causalsim(
   n,
   effect = 1,
   propensity = "moderate",
-  baseline = 0,
+  baseline = "moderate",
   sigma = 1,
   covariates = list(),
   n_confounders = 0L,
@@ -54,7 +54,11 @@ causalsim(
   Numeric scalar, preset string, or function. Mean potential outcome
   under control, `E[Y(0) | W]`. Preset strings follow the same levels as
   `propensity` and apply a linear combination of confounders. Defaults
-  to `0`.
+  to `"moderate"`, so that confounders declared via `n_confounders` (or
+  `role = "confounder"`) enter both the treatment and outcome models and
+  therefore actually induce confounding bias. With no confounders
+  present, any preset baseline resolves to `0`. Set a numeric scalar
+  (e.g. `0`) for a constant baseline that ignores covariates.
 
 - sigma:
 
@@ -127,12 +131,12 @@ directly.
 data <- causalsim(n = 500, n_confounders = 1, effect = 2, seed = 1L)
 head(data)
 #>            W A          Y .tau        .p
-#> 1 -0.6264538 0 -1.4546914    2 0.4223273
-#> 2  0.1836433 0 -0.8456543    2 0.5229393
-#> 3 -0.8356286 0 -1.2504797    2 0.3970399
-#> 4  1.5952808 0  0.6672881    2 0.6894695
-#> 5  0.3295078 1  0.7092303    2 0.5410956
-#> 6 -0.8204684 0 -2.0350035    2 0.3988560
+#> 1 -0.6264538 0 -1.7679183    2 0.4223273
+#> 2  0.1836433 0 -0.7538327    2 0.5229393
+#> 3 -0.8356286 0 -1.6682940    2 0.3970399
+#> 4  1.5952808 0  1.4649285    2 0.6894695
+#> 5  0.3295078 1  0.8739842    2 0.5410956
+#> 6 -0.8204684 0 -2.4452377    2 0.3988560
 
 # Heterogeneous effect with an explicit covariate spec
 data2 <- causalsim(
@@ -147,10 +151,10 @@ data2 <- causalsim(
 )
 head(data2)
 #>            W V A         Y .tau        .p
-#> 1  1.3709584 1 1 5.8250585  3.5 0.6649605
-#> 2 -0.5646982 0 1 2.5241222  2.0 0.4298780
-#> 3  0.3631284 1 1 4.4707334  3.5 0.5452668
-#> 4  0.6328626 0 0 0.3769734  2.0 0.5784543
-#> 5  0.4042683 0 1 1.0040666  2.0 0.5503622
-#> 6 -0.1061245 0 1 1.4025171  2.0 0.4867375
+#> 1  1.3709584 1 1 6.5105377  3.5 0.6649605
+#> 2 -0.5646982 0 1 2.2417731  2.0 0.4298780
+#> 3  0.3631284 1 1 4.6522976  3.5 0.5452668
+#> 4  0.6328626 0 0 0.6934047  2.0 0.5784543
+#> 5  0.4042683 0 1 1.2062008  2.0 0.5503622
+#> 6 -0.1061245 0 1 1.3494548  2.0 0.4867375
 ```

@@ -13,7 +13,7 @@ causalsim_dgp(
   n,
   effect = 1,
   propensity = "moderate",
-  baseline = 0,
+  baseline = "moderate",
   sigma = 1,
   covariates = list(),
   n_confounders = 0L,
@@ -52,7 +52,11 @@ causalsim_dgp(
   Numeric scalar, preset string, or function. Mean potential outcome
   under control, `E[Y(0) | W]`. Preset strings follow the same levels as
   `propensity` and apply a linear combination of confounders. Defaults
-  to `0`.
+  to `"moderate"`, so that confounders declared via `n_confounders` (or
+  `role = "confounder"`) enter both the treatment and outcome models and
+  therefore actually induce confounding bias. With no confounders
+  present, any preset baseline resolves to `0`. Set a numeric scalar
+  (e.g. `0`) for a constant baseline that ignores covariates.
 
 - sigma:
 
