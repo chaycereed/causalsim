@@ -8,7 +8,7 @@ causalsim(
   n,
   effect = 1,
   propensity = "moderate",
-  baseline = 0,
+  baseline = "moderate",
   sigma = 1,
   covariates = list(),
   n_confounders = 0L,
@@ -37,7 +37,11 @@ a logistic propensity over confounders with coefficients 0.25, 0.5, and
 \item{baseline}{Numeric scalar, preset string, or function. Mean potential
 outcome under control, \code{E[Y(0) | W]}. Preset strings follow the same
 levels as \code{propensity} and apply a linear combination of confounders.
-Defaults to \code{0}.}
+Defaults to \code{"moderate"}, so that confounders declared via \code{n_confounders}
+(or \code{role = "confounder"}) enter both the treatment and outcome models and
+therefore actually induce confounding bias. With no confounders present, any
+preset baseline resolves to \code{0}. Set a numeric scalar (e.g. \code{0}) for a
+constant baseline that ignores covariates.}
 
 \item{sigma}{Positive numeric. Standard deviation of the outcome noise term.
 Default \code{1}.}

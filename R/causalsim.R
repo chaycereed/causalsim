@@ -45,7 +45,7 @@ causalsim <- function(
   n,
   effect = 1,
   propensity = "moderate",
-  baseline = 0,
+  baseline = "moderate",
   sigma = 1,
   covariates = list(),
   n_confounders = 0L,

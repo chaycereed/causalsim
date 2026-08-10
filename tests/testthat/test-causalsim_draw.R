@@ -82,6 +82,28 @@ test_that("mean .tau is close to true_ate for large draw", {
   expect_equal(mean(d$.tau), dgp$true_ate, tolerance = 0.05)
 })
 
+# ── Confounding behaviour ─────────────────────────────────────────────────────
+
+test_that("a default confounder actually induces naive bias", {
+  # With default propensity + baseline presets, a confounder must enter both
+  # the treatment and outcome models, so a naive difference in means is biased
+  # away from the true ATE.
+  dgp <- causalsim_dgp(n = 50000, n_confounders = 1, effect = 2)
+  d   <- causalsim_draw(dgp, seed = 1)
+  naive <- mean(d$Y[d$A == 1]) - mean(d$Y[d$A == 0])
+  expect_gt(abs(naive - dgp$true_ate), 0.05)
+})
+
+test_that("an RCT (scalar propensity) leaves the naive estimate unbiased", {
+  # Randomized treatment: even with a preset baseline the confounder cannot
+  # induce bias, because assignment does not depend on it.
+  dgp <- causalsim_dgp(n = 50000, n_confounders = 1, effect = 2,
+                       propensity = 0.5)
+  d   <- causalsim_draw(dgp, seed = 1)
+  naive <- mean(d$Y[d$A == 1]) - mean(d$Y[d$A == 0])
+  expect_lt(abs(naive - dgp$true_ate), 0.05)
+})
+
 # ── No-covariate DGP ─────────────────────────────────────────────────────────
 
 test_that("draw works with no covariates and scalar functions", {
