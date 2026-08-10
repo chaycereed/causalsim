@@ -13,7 +13,6 @@ causalsim_dgp(
   covariates = list(),
   n_confounders = 0L,
   n_effect_modifiers = 0L,
-  n_instruments = 0L,
   n_noise = 0L,
   mc_draws = 10000L
 )
@@ -52,9 +51,6 @@ auto-generated as \code{W} (single) or \verb{W1, W2, ...} (multiple).}
 
 \item{n_effect_modifiers}{Non-negative integer. Auto-generates standard
 normal effect modifiers as \code{V} or \verb{V1, V2, ...}.}
-
-\item{n_instruments}{Non-negative integer. Auto-generates standard normal
-instruments as \code{Z} or \verb{Z1, Z2, ...}.}
 
 \item{n_noise}{Non-negative integer. Auto-generates standard normal noise
 covariates as \code{X} or \verb{X1, X2, ...}.}
@@ -132,11 +128,11 @@ dgp2 <- causalsim_dgp(
   baseline = function(W) 1.5 * W
 )
 
-# Mixed: shorthand confounders + explicit instrument + RCT propensity
+# Mixed: shorthand confounders + explicit noise covariate + RCT propensity
 dgp3 <- causalsim_dgp(
   n = 1000,
   n_confounders = 2,
-  covariates = list(Z = covar("normal", role = "instrument")),
+  covariates = list(X = covar("normal", role = "noise")),
   effect = 1,
   propensity = 0.5
 )

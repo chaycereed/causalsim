@@ -14,8 +14,6 @@ covar(dist = "normal", role = "confounder", ...)
 \describe{
 \item{\code{"confounder"}}{Enters both the propensity model and the outcome
 baseline; creates confounding bias in naive estimators.}
-\item{\code{"instrument"}}{Enters the propensity model only (exclusion
-restriction holds).}
 \item{\code{"effect_modifier"}}{Available for use in the \code{effect} function;
 excluded from the propensity model unless also a \code{"confounder"}.}
 \item{\code{"noise"}}{Independent of both treatment and outcome; adds

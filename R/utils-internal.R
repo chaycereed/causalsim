@@ -20,23 +20,14 @@
   if (as_int) as.integer(x) else x
 }
 
-# Keep old names as aliases so existing callers continue to work
-.validate_positive_int <- function(x, name) {
-  .validate_positive(x, name, as_int = TRUE)
-}
-.validate_nonneg_int <- function(x, name) {
-  .validate_nonneg(x, name, as_int = TRUE)
-}
-
 # ── Covariate spec construction ───────────────────────────────────────────────
 
 # Merge shorthand count arguments with an explicit named covariate list.
 .build_covariate_spec <- function(n_confounders, n_effect_modifiers,
-                                   n_instruments, n_noise, covariates) {
+                                  n_noise, covariates) {
   auto <- c(
     .auto_covariates(n_confounders, "confounder", "W"),
     .auto_covariates(n_effect_modifiers, "effect_modifier", "V"),
-    .auto_covariates(n_instruments, "instrument", "Z"),
     .auto_covariates(n_noise, "noise", "X")
   )
 

@@ -50,7 +50,6 @@ causalsim <- function(
   covariates = list(),
   n_confounders = 0L,
   n_effect_modifiers = 0L,
-  n_instruments = 0L,
   n_noise = 0L,
   mc_draws = 10000L,
   seed = NULL
@@ -64,7 +63,6 @@ causalsim <- function(
     covariates = covariates,
     n_confounders = n_confounders,
     n_effect_modifiers = n_effect_modifiers,
-    n_instruments = n_instruments,
     n_noise = n_noise,
     mc_draws = mc_draws
   )

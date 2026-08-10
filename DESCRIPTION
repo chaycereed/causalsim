@@ -5,10 +5,11 @@ Authors@R:
     person("Chayce", "Reed", email = "code.jcr@gmail.com", role = c("aut", "cre"))
 Description: Construct, simulate, and evaluate causal data generating processes
     (DGPs) with known ground truth. Designed for benchmarking causal estimators,
-    stress-testing assumption violations, and building reproducible teaching
-    examples. Variable roles (confounder, instrument, mediator, effect modifier)
-    and assumption violations (unmeasured confounding, positivity, effect
-    heterogeneity) are first-class concepts in the API.
+    studying confounding and treatment-effect heterogeneity, and building
+    reproducible teaching examples. Covariate roles (confounder, effect modifier,
+    noise) and heterogeneous treatment effects are first-class concepts in the
+    API, and estimator performance is summarised with bias, root mean squared
+    error, confidence-interval coverage, and power.
 License: MIT + file LICENSE
 URL: https://chaycereed.github.io/causalsim/,
     https://github.com/chaycereed/causalsim

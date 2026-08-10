@@ -18,9 +18,9 @@ test_that("output has covariate, treatment, outcome, and meta columns", {
 
 test_that("multi-covariate DGP produces correctly named columns", {
   dgp <- causalsim_dgp(n = 100, n_confounders = 2,
-                       n_instruments = 1, effect = 1)
+                       n_noise = 1, effect = 1)
   d   <- causalsim_draw(dgp)
-  expect_true(all(c("W1", "W2", "Z", "A", "Y") %in% names(d)))
+  expect_true(all(c("W1", "W2", "X", "A", "Y") %in% names(d)))
 })
 
 # ── Column types and ranges ───────────────────────────────────────────────────

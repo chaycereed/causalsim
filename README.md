@@ -5,7 +5,7 @@ An R package for defining causal data generating processes with known ground tru
 ## Features
 
 - Structural causal model with explicit effect, propensity, and baseline functions
-- Named covariate roles: confounder, instrument, effect modifier, noise
+- Named covariate roles: confounder, effect modifier, noise
 - Preset confounding levels (`"low"`, `"moderate"`, `"high"`) or custom functions
 - Exact or Monte Carlo true ATE computed at construction time
 - Flexible estimator interface: named numeric vector, named list, or one-row data frame

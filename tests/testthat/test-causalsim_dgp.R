@@ -137,10 +137,10 @@ test_that("n_confounders = 2 generates W1 and W2", {
   expect_named(dgp$covar_spec, c("W1", "W2"))
 })
 
-test_that("n_instruments = 1 generates covariate named Z", {
-  dgp <- causalsim_dgp(n = 100, n_instruments = 1, effect = 1)
-  expect_named(dgp$covar_spec, "Z")
-  expect_equal(dgp$covar_spec$Z$role, "instrument")
+test_that("n_noise = 1 generates covariate named X", {
+  dgp <- causalsim_dgp(n = 100, n_noise = 1, effect = 1)
+  expect_named(dgp$covar_spec, "X")
+  expect_equal(dgp$covar_spec$X$role, "noise")
 })
 
 test_that("n_effect_modifiers = 1 generates covariate named V", {
@@ -169,7 +169,7 @@ test_that("shorthand and explicit covariates merge correctly", {
   dgp <- causalsim_dgp(
     n = 100,
     n_confounders = 1,
-    covariates    = list(Z = covar("normal", role = "instrument")),
+    covariates    = list(Z = covar("normal", role = "noise")),
     effect        = 1
   )
   expect_named(dgp$covar_spec, c("W", "Z"))

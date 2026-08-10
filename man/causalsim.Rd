@@ -13,7 +13,6 @@ causalsim(
   covariates = list(),
   n_confounders = 0L,
   n_effect_modifiers = 0L,
-  n_instruments = 0L,
   n_noise = 0L,
   mc_draws = 10000L,
   seed = NULL
@@ -53,9 +52,6 @@ auto-generated as \code{W} (single) or \verb{W1, W2, ...} (multiple).}
 
 \item{n_effect_modifiers}{Non-negative integer. Auto-generates standard
 normal effect modifiers as \code{V} or \verb{V1, V2, ...}.}
-
-\item{n_instruments}{Non-negative integer. Auto-generates standard normal
-instruments as \code{Z} or \verb{Z1, Z2, ...}.}
 
 \item{n_noise}{Non-negative integer. Auto-generates standard normal noise
 covariates as \code{X} or \verb{X1, X2, ...}.}

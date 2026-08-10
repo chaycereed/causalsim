@@ -11,8 +11,6 @@
 #'   \describe{
 #'     \item{`"confounder"`}{Enters both the propensity model and the outcome
 #'       baseline; creates confounding bias in naive estimators.}
-#'     \item{`"instrument"`}{Enters the propensity model only (exclusion
-#'       restriction holds).}
 #'     \item{`"effect_modifier"`}{Available for use in the `effect` function;
 #'       excluded from the propensity model unless also a `"confounder"`.}
 #'     \item{`"noise"`}{Independent of both treatment and outcome; adds
@@ -42,7 +40,7 @@ covar <- function(dist = "normal", role = "confounder", ...) {
   dist <- match.arg(dist, c("normal", "binary", "uniform"))
   role <- match.arg(
     role,
-    choices = c("confounder", "instrument", "effect_modifier", "noise"),
+    choices = c("confounder", "effect_modifier", "noise"),
     several.ok = TRUE
   )
   structure(

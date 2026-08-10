@@ -30,8 +30,6 @@
 #'   auto-generated as `W` (single) or `W1, W2, ...` (multiple).
 #' @param n_effect_modifiers Non-negative integer. Auto-generates standard
 #'   normal effect modifiers as `V` or `V1, V2, ...`.
-#' @param n_instruments Non-negative integer. Auto-generates standard normal
-#'   instruments as `Z` or `Z1, Z2, ...`.
 #' @param n_noise Non-negative integer. Auto-generates standard normal noise
 #'   covariates as `X` or `X1, X2, ...`.
 #' @param mc_draws Positive integer. Monte Carlo draws for true ATE
@@ -100,11 +98,11 @@
 #'   baseline = function(W) 1.5 * W
 #' )
 #'
-#' # Mixed: shorthand confounders + explicit instrument + RCT propensity
+#' # Mixed: shorthand confounders + explicit noise covariate + RCT propensity
 #' dgp3 <- causalsim_dgp(
 #'   n = 1000,
 #'   n_confounders = 2,
-#'   covariates = list(Z = covar("normal", role = "instrument")),
+#'   covariates = list(X = covar("normal", role = "noise")),
 #'   effect = 1,
 #'   propensity = 0.5
 #' )
@@ -119,7 +117,6 @@ causalsim_dgp <- function(
   covariates = list(),
   n_confounders = 0L,
   n_effect_modifiers = 0L,
-  n_instruments = 0L,
   n_noise = 0L,
   mc_draws = 10000L
 ) {
@@ -132,13 +129,10 @@ causalsim_dgp <- function(
   n_effect_modifiers <- .validate_nonneg(
     n_effect_modifiers, "n_effect_modifiers", as_int = TRUE
   )
-  n_instruments <- .validate_nonneg(
-    n_instruments, "n_instruments", as_int = TRUE
-  )
   n_noise <- .validate_nonneg(n_noise, "n_noise", as_int = TRUE)
 
   covar_spec <- .build_covariate_spec(
-    n_confounders, n_effect_modifiers, n_instruments, n_noise, covariates
+    n_confounders, n_effect_modifiers, n_noise, covariates
   )
 
   heterogeneous <- is.function(effect)
@@ -173,7 +167,6 @@ causalsim_dgp <- function(
         covariates = covariates,
         n_confounders = n_confounders,
         n_effect_modifiers = n_effect_modifiers,
-        n_instruments = n_instruments,
         n_noise = n_noise,
         mc_draws = mc_draws
       )
