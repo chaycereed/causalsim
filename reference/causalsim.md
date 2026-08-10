@@ -19,7 +19,6 @@ causalsim(
   covariates = list(),
   n_confounders = 0L,
   n_effect_modifiers = 0L,
-  n_instruments = 0L,
   n_noise = 0L,
   mc_draws = 10000L,
   seed = NULL
@@ -80,11 +79,6 @@ causalsim(
 
   Non-negative integer. Auto-generates standard normal effect modifiers
   as `V` or `V1, V2, ...`.
-
-- n_instruments:
-
-  Non-negative integer. Auto-generates standard normal instruments as
-  `Z` or `Z1, Z2, ...`.
 
 - n_noise:
 

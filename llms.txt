@@ -7,7 +7,7 @@ ground truth and evaluating estimator performance against them.
 
 - Structural causal model with explicit effect, propensity, and baseline
   functions
-- Named covariate roles: confounder, instrument, effect modifier, noise
+- Named covariate roles: confounder, effect modifier, noise
 - Preset confounding levels (`"low"`, `"moderate"`, `"high"`) or custom
   functions
 - Exact or Monte Carlo true ATE computed at construction time

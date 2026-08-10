@@ -18,7 +18,6 @@ causalsim_dgp(
   covariates = list(),
   n_confounders = 0L,
   n_effect_modifiers = 0L,
-  n_instruments = 0L,
   n_noise = 0L,
   mc_draws = 10000L
 )
@@ -78,11 +77,6 @@ causalsim_dgp(
 
   Non-negative integer. Auto-generates standard normal effect modifiers
   as `V` or `V1, V2, ...`.
-
-- n_instruments:
-
-  Non-negative integer. Auto-generates standard normal instruments as
-  `Z` or `Z1, Z2, ...`.
 
 - n_noise:
 
@@ -192,11 +186,11 @@ dgp2 <- causalsim_dgp(
   baseline = function(W) 1.5 * W
 )
 
-# Mixed: shorthand confounders + explicit instrument + RCT propensity
+# Mixed: shorthand confounders + explicit noise covariate + RCT propensity
 dgp3 <- causalsim_dgp(
   n = 1000,
   n_confounders = 2,
-  covariates = list(Z = covar("normal", role = "instrument")),
+  covariates = list(X = covar("normal", role = "noise")),
   effect = 1,
   propensity = 0.5
 )

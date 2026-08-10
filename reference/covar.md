@@ -28,10 +28,6 @@ covar(dist = "normal", role = "confounder", ...)
   :   Enters both the propensity model and the outcome baseline; creates
       confounding bias in naive estimators.
 
-  `"instrument"`
-
-  :   Enters the propensity model only (exclusion restriction holds).
-
   `"effect_modifier"`
 
   :   Available for use in the `effect` function; excluded from the
