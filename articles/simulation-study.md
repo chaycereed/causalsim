@@ -324,6 +324,78 @@ in the model.
 
 ------------------------------------------------------------------------
 
+## Step 7: Heterogeneous Effects (Effect Modifiers)
+
+So far the treatment effect has been constant. Real effects often vary
+across subgroups. Declare a covariate with `role = "effect_modifier"`
+and reference it in a function passed to `effect`:
+
+``` r
+
+het_dgp <- causalsim_dgp(
+  n          = 4000,
+  covariates = list(
+    W = covar("normal", role = "confounder"),
+    V = covar("binary", role = "effect_modifier", prob = 0.5)
+  ),
+  effect     = function(V) 2 + 3 * V,   # effect is 2 when V = 0, 5 when V = 1
+  propensity = function(W) plogis(0.5 * W),
+  baseline   = function(W) W
+)
+het_dgp
+#> <causalsim_dgp>
+#>   n            : 4000
+#>   true ATE     : 3.5111
+#>   heterogeneous: TRUE
+#>   sigma        : 1.00
+#>   covariates   :
+#>     W       normal  [confounder]
+#>     V       binary  [effect_modifier]
+```
+
+The function passed to `effect` is what activates the modifier. A
+covariate labelled `effect_modifier` but never referenced by `effect` is
+inert, and
+[`causalsim_dgp()`](https://chaycereed.github.io/causalsim/reference/causalsim_dgp.md)
+warns when that happens — so the role can never silently do nothing.
+
+Ground truth is carried per unit in `.tau`, so the subgroup effects are
+known exactly:
+
+``` r
+
+d <- causalsim_draw(het_dgp, seed = 1L)
+tapply(d$.tau, d$V, mean)   # 2 for V = 0, 5 for V = 1
+#> 0 1 
+#> 2 5
+```
+
+An estimator that ignores the modifier recovers only the overall average
+effect, while one that interacts treatment with `V` recovers the
+subgroup effects:
+
+``` r
+
+overall <- lm(Y ~ A + W, data = d)         # assumes a constant effect
+interact <- lm(Y ~ A * V + W, data = d)     # allows the effect to vary with V
+
+c(
+  average      = coef(overall)[["A"]],
+  subgroup_v0  = coef(interact)[["A"]],
+  subgroup_v1  = coef(interact)[["A"]] + coef(interact)[["A:V"]]
+)
+#>     average subgroup_v0 subgroup_v1 
+#>    3.499818    1.992688    5.054733
+```
+
+The constant-effect model lands near the true ATE (3.51), but hides the
+heterogeneity; the interaction model recovers both subgroup effects.
+This is the setup for benchmarking CATE / heterogeneous-effect
+estimators (causal forests, meta-learners): because the true subgroup
+effects are known, any estimator’s recovery of them can be scored.
+
+------------------------------------------------------------------------
+
 ## Where to go next
 
 This workflow (define, evaluate, grid) scales to more complex settings.
@@ -332,7 +404,7 @@ A few directions:
 | Goal | How |
 |----|----|
 | Just generate data | Use [`causalsim()`](https://chaycereed.github.io/causalsim/reference/causalsim.md) for a single dataset in one call |
-| Heterogeneous effects | Pass a function to `effect` in [`causalsim_dgp()`](https://chaycereed.github.io/causalsim/reference/causalsim_dgp.md) |
+| Heterogeneous effects | See Step 7 — declare an `effect_modifier` and pass a function to `effect` |
 | Non-normal covariates | Use `covar("binary")` or `covar("uniform")` in `covariates` |
 | Multiple confounders | Set `n_confounders = 3` or pass named `covariates` |
 | Custom covariate structure | Mix `n_confounders` with explicit `covariates = list(...)` |

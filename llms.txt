@@ -123,6 +123,53 @@ grid_result <- causalsim_grid(
 grid_result
 ```
 
+### Heterogeneous effects
+
+Declare a covariate with `role = "effect_modifier"` and reference it in
+a function passed to `effect` to make the treatment effect vary across
+subgroups. The individual effects are stored in the `.tau` column as
+ground truth.
+
+``` r
+
+het_dgp <- causalsim_dgp(
+  n          = 2000,
+  covariates = list(
+    W = covar("normal", role = "confounder"),
+    V = covar("binary", role = "effect_modifier", prob = 0.5)
+  ),
+  effect     = function(V) 2 + 3 * V   # effect is 2 when V = 0, 5 when V = 1
+)
+
+d <- causalsim_draw(het_dgp, seed = 1L)
+tapply(d$.tau, d$V, mean)              # 2 for V = 0, 5 for V = 1
+```
+
+The function passed to `effect` is what activates the modifier; a
+covariate labelled `effect_modifier` that `effect` never references is
+inert, and
+[`causalsim_dgp()`](https://chaycereed.github.io/causalsim/reference/causalsim_dgp.md)
+warns when that happens.
+
+## Roadmap
+
+Planned for a future release:
+
+- **Additional covariate roles.** The current roles (`confounder`,
+  `effect_modifier`, `noise`) cover the common cases. Two single-path
+  roles would complete the treatment/outcome taxonomy:
+  - `instrument` — drives treatment only (enters the propensity model,
+    excluded from the outcome), for benchmarking instrumental-variable
+    estimators.
+  - `prognostic` — drives the outcome only (enters the baseline,
+    independent of treatment), for studying precision covariates and
+    variance reduction.
+
+  These will ship together with worked examples that demonstrate each
+  (an IV estimator and a variance-reduction comparison, respectively).
+- **Assumption-violation helpers.** First-class support for unmeasured
+  confounding and positivity violations.
+
 ## License
 
 MIT License. See `LICENSE` for details.
