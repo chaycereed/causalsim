@@ -220,6 +220,43 @@
   }
 }
 
+# Warn when a covariate is declared an effect modifier but the `effect` argument
+# never references it, so it silently has no bearing on the treatment effect.
+# `effect` is the ORIGINAL user argument (scalar/preset/function), not the
+# normalized closure: a normalized scalar gains a `...` formal and would be
+# indistinguishable from a user function that consumes all covariates.
+.warn_inert_effect_modifiers <- function(effect, covar_spec) {
+  modifier_nms <- names(
+    Filter(function(cv) "effect_modifier" %in% cv$role, covar_spec)
+  )
+  if (length(modifier_nms) == 0L) return(invisible(NULL))
+
+  if (is.function(effect)) {
+    fn_formals <- names(formals(effect))
+    # A `...`-consuming effect may use any covariate; cannot flag as inert.
+    if ("..." %in% fn_formals) return(invisible(NULL))
+    unused <- setdiff(modifier_nms, fn_formals)
+  } else {
+    # Scalar or preset effect is constant across covariates.
+    unused <- modifier_nms
+  }
+
+  if (length(unused) > 0L) {
+    warning(
+      sprintf(
+        paste0(
+          "effect_modifier covariate(s) not used by `effect`: %s. They will ",
+          "not modify the treatment effect. Reference them in a function ",
+          "passed to `effect`, e.g. effect = function(%s) 2 + %s."
+        ),
+        paste(unused, collapse = ", "), unused[1L], unused[1L]
+      ),
+      call. = FALSE
+    )
+  }
+  invisible(NULL)
+}
+
 # Validate that the propensity function returns values strictly in [0, 1]
 # by evaluating it on a small test draw at construction time.
 .validate_propensity_fn <- function(propensity_fn, covar_spec,

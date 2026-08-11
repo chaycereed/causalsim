@@ -144,8 +144,22 @@ test_that("n_noise = 1 generates covariate named X", {
 })
 
 test_that("n_effect_modifiers = 1 generates covariate named V", {
-  dgp <- causalsim_dgp(n = 100, n_effect_modifiers = 1, effect = 1)
+  dgp <- causalsim_dgp(n = 100, n_effect_modifiers = 1,
+                       effect = function(V) 1 + V)
   expect_named(dgp$covar_spec, "V")
+})
+
+test_that("declaring an unused effect_modifier warns", {
+  expect_warning(
+    causalsim_dgp(n = 100, n_effect_modifiers = 1, effect = 1),
+    "not used by `effect`"
+  )
+})
+
+test_that("an effect_modifier used by `effect` does not warn", {
+  expect_no_warning(
+    causalsim_dgp(n = 100, n_effect_modifiers = 1, effect = function(V) 1 + V)
+  )
 })
 
 # ── Covariate spec: explicit list (Option A) ──────────────────────────────────
@@ -157,7 +171,7 @@ test_that("explicit covariates list is stored on DGP", {
       W = covar("normal", role = "confounder"),
       V = covar("binary", role = "effect_modifier", prob = 0.4)
     ),
-    effect = 1
+    effect = function(V) 1 + V
   )
   expect_named(dgp$covar_spec, c("W", "V"))
   expect_s3_class(dgp$covar_spec$W, "causalsim_covar")

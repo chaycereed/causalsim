@@ -21,8 +21,8 @@
 #'   levels as `propensity` and apply a linear combination of confounders.
 #'   Defaults to `"moderate"`, so that confounders declared via `n_confounders`
 #'   (or `role = "confounder"`) enter both the treatment and outcome models and
-#'   therefore actually induce confounding bias. With no confounders present, any
-#'   preset baseline resolves to `0`. Set a numeric scalar (e.g. `0`) for a
+#'   therefore actually induce confounding bias. With no confounders present,
+#'   any preset baseline resolves to `0`. Set a numeric scalar (e.g. `0`) for a
 #'   constant baseline that ignores covariates.
 #' @param sigma Positive numeric. Standard deviation of the outcome noise term.
 #'   Default `1`.
@@ -148,6 +148,7 @@ causalsim_dgp <- function(
   .validate_fn_args(propensity_fn, names(covar_spec), "propensity")
   .validate_fn_args(baseline_fn, names(covar_spec), "baseline")
   .validate_propensity_fn(propensity_fn, covar_spec)
+  .warn_inert_effect_modifiers(effect, covar_spec)
 
   true_ate <- .mc_ate(effect_fn, covar_spec, mc_draws, heterogeneous)
 

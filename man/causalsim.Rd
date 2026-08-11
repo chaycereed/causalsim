@@ -39,8 +39,8 @@ outcome under control, \code{E[Y(0) | W]}. Preset strings follow the same
 levels as \code{propensity} and apply a linear combination of confounders.
 Defaults to \code{"moderate"}, so that confounders declared via \code{n_confounders}
 (or \code{role = "confounder"}) enter both the treatment and outcome models and
-therefore actually induce confounding bias. With no confounders present, any
-preset baseline resolves to \code{0}. Set a numeric scalar (e.g. \code{0}) for a
+therefore actually induce confounding bias. With no confounders present,
+any preset baseline resolves to \code{0}. Set a numeric scalar (e.g. \code{0}) for a
 constant baseline that ignores covariates.}
 
 \item{sigma}{Positive numeric. Standard deviation of the outcome noise term.
