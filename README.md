@@ -43,11 +43,11 @@ For estimator benchmarking or multi-draw workflows, use `causalsim_dgp()` and `c
 
 ```r
 dgp <- causalsim_dgp(
-  n             = 500,
+  n = 500,
   n_confounders = 1,
-  effect        = 2,
-  propensity    = "moderate",
-  baseline      = "moderate"
+  effect = 2,
+  propensity = "moderate",
+  baseline = "moderate"
 )
 dgp
 ```
@@ -69,7 +69,7 @@ An estimator is any function that accepts a data frame and returns a named numer
 ols_est <- function(data) {
   fit <- lm(Y ~ A + W, data = data)
   est <- coef(fit)[["A"]]
-  se  <- sqrt(vcov(fit)["A", "A"])
+  se <- sqrt(vcov(fit)["A", "A"])
   c(estimate = est, ci_lower = est - 1.96 * se, ci_upper = est + 1.96 * se)
 }
 
@@ -86,12 +86,12 @@ plot(result)
 
 ```r
 grid_result <- causalsim_grid(
-  dgp       = dgp,
+  dgp = dgp,
   estimator = ols_est,
-  vary      = list(n = c(100L, 250L, 500L, 1000L)),
-  reps      = 200L,
-  metrics   = c("bias", "rmse"),
-  seed      = 1L
+  vary = list(n = c(100L, 250L, 500L, 1000L)),
+  reps = 200L,
+  metrics = c("bias", "rmse"),
+  seed = 1L
 )
 grid_result
 ```
@@ -104,7 +104,7 @@ The individual effects are stored in the `.tau` column as ground truth.
 
 ```r
 het_dgp <- causalsim_dgp(
-  n          = 2000,
+  n = 2000,
   covariates = list(
     W = covar("normal", role = "confounder"),
     V = covar("binary", role = "effect_modifier", prob = 0.5)
