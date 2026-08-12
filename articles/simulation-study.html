@@ -181,11 +181,11 @@ confounder, a constant effect of 2, moderate propensity confounding
 (logistic coefficient 0.5), and a moderate baseline shift.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dgp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/causalsim_dgp.html">causalsim_dgp</a></span><span class="op">(</span></span>
-<span>  n             <span class="op">=</span> <span class="fl">500</span>,</span>
+<span>  n <span class="op">=</span> <span class="fl">500</span>,</span>
 <span>  n_confounders <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  effect        <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>  propensity    <span class="op">=</span> <span class="st">"moderate"</span>,</span>
-<span>  baseline      <span class="op">=</span> <span class="st">"moderate"</span></span>
+<span>  effect <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>  propensity <span class="op">=</span> <span class="st">"moderate"</span>,</span>
+<span>  baseline <span class="op">=</span> <span class="st">"moderate"</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">dgp</span></span>
 <span><span class="co">#&gt; &lt;causalsim_dgp&gt;</span></span>
@@ -246,7 +246,7 @@ enable coverage and power metrics.</p>
 <span><span class="va">naive_est</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">A</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span></span>
 <span>  <span class="va">est</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span><span class="op">[[</span><span class="st">"A"</span><span class="op">]</span><span class="op">]</span></span>
-<span>  <span class="va">se</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/vcov.html" class="external-link">vcov</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span><span class="op">[</span><span class="st">"A"</span>, <span class="st">"A"</span><span class="op">]</span><span class="op">)</span></span>
+<span>  <span class="va">se</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/vcov.html" class="external-link">vcov</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span><span class="op">[</span><span class="st">"A"</span>, <span class="st">"A"</span><span class="op">]</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>estimate <span class="op">=</span> <span class="va">est</span>, ci_lower <span class="op">=</span> <span class="va">est</span> <span class="op">-</span> <span class="fl">1.96</span> <span class="op">*</span> <span class="va">se</span>, ci_upper <span class="op">=</span> <span class="va">est</span> <span class="op">+</span> <span class="fl">1.96</span> <span class="op">*</span> <span class="va">se</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
@@ -254,14 +254,14 @@ enable coverage and power metrics.</p>
 <span><span class="va">ols_est</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">A</span> <span class="op">+</span> <span class="va">W</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span></span>
 <span>  <span class="va">est</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span><span class="op">[[</span><span class="st">"A"</span><span class="op">]</span><span class="op">]</span></span>
-<span>  <span class="va">se</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/vcov.html" class="external-link">vcov</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span><span class="op">[</span><span class="st">"A"</span>, <span class="st">"A"</span><span class="op">]</span><span class="op">)</span></span>
+<span>  <span class="va">se</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/vcov.html" class="external-link">vcov</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span><span class="op">[</span><span class="st">"A"</span>, <span class="st">"A"</span><span class="op">]</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>estimate <span class="op">=</span> <span class="va">est</span>, ci_lower <span class="op">=</span> <span class="va">est</span> <span class="op">-</span> <span class="fl">1.96</span> <span class="op">*</span> <span class="va">se</span>, ci_upper <span class="op">=</span> <span class="va">est</span> <span class="op">+</span> <span class="fl">1.96</span> <span class="op">*</span> <span class="va">se</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 <p>Named lists are also accepted, so the following is equivalent:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ols_est</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">A</span> <span class="op">+</span> <span class="va">W</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span></span>
-<span>  <span class="va">ci</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/confint.html" class="external-link">confint</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span><span class="op">[</span><span class="st">"A"</span>, <span class="op">]</span></span>
+<span>  <span class="va">ci</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/confint.html" class="external-link">confint</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span><span class="op">[</span><span class="st">"A"</span>, <span class="op">]</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>    estimate <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span><span class="op">[</span><span class="st">"A"</span><span class="op">]</span>,</span>
 <span>    ci_lower <span class="op">=</span> <span class="va">ci</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,</span>
@@ -344,12 +344,12 @@ four levels to track how the OLS estimator’s precision improves with
 more data.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">grid_n</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/causalsim_grid.html">causalsim_grid</a></span><span class="op">(</span></span>
-<span>  dgp       <span class="op">=</span> <span class="va">dgp</span>,</span>
+<span>  dgp <span class="op">=</span> <span class="va">dgp</span>,</span>
 <span>  estimator <span class="op">=</span> <span class="va">ols_est</span>,</span>
-<span>  vary      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100L</span>, <span class="fl">250L</span>, <span class="fl">500L</span>, <span class="fl">1000L</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  reps      <span class="op">=</span> <span class="fl">300L</span>,</span>
-<span>  metrics   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"bias"</span>, <span class="st">"rmse"</span><span class="op">)</span>,</span>
-<span>  seed      <span class="op">=</span> <span class="fl">1L</span></span>
+<span>  vary <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100L</span>, <span class="fl">250L</span>, <span class="fl">500L</span>, <span class="fl">1000L</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  reps <span class="op">=</span> <span class="fl">300L</span>,</span>
+<span>  metrics <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"bias"</span>, <span class="st">"rmse"</span><span class="op">)</span>,</span>
+<span>  seed <span class="op">=</span> <span class="fl">1L</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">grid_n</span></span>
 <span><span class="co">#&gt; &lt;causalsim_grid&gt;  4 cells  vary: n  reps/cell: 300</span></span>
@@ -422,14 +422,14 @@ vary across subgroups. Declare a covariate with
 passed to <code>effect</code>:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">het_dgp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/causalsim_dgp.html">causalsim_dgp</a></span><span class="op">(</span></span>
-<span>  n          <span class="op">=</span> <span class="fl">4000</span>,</span>
+<span>  n <span class="op">=</span> <span class="fl">4000</span>,</span>
 <span>  covariates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>    W <span class="op">=</span> <span class="fu"><a href="../reference/covar.html">covar</a></span><span class="op">(</span><span class="st">"normal"</span>, role <span class="op">=</span> <span class="st">"confounder"</span><span class="op">)</span>,</span>
 <span>    V <span class="op">=</span> <span class="fu"><a href="../reference/covar.html">covar</a></span><span class="op">(</span><span class="st">"binary"</span>, role <span class="op">=</span> <span class="st">"effect_modifier"</span>, prob <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span>
 <span>  <span class="op">)</span>,</span>
-<span>  effect     <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">V</span><span class="op">)</span> <span class="fl">2</span> <span class="op">+</span> <span class="fl">3</span> <span class="op">*</span> <span class="va">V</span>,   <span class="co"># effect is 2 when V = 0, 5 when V = 1</span></span>
+<span>  effect <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">V</span><span class="op">)</span> <span class="fl">2</span> <span class="op">+</span> <span class="fl">3</span> <span class="op">*</span> <span class="va">V</span>,   <span class="co"># effect is 2 when V = 0, 5 when V = 1</span></span>
 <span>  propensity <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">W</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/stats/Logistic.html" class="external-link">plogis</a></span><span class="op">(</span><span class="fl">0.5</span> <span class="op">*</span> <span class="va">W</span><span class="op">)</span>,</span>
-<span>  baseline   <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">W</span><span class="op">)</span> <span class="va">W</span></span>
+<span>  baseline <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">W</span><span class="op">)</span> <span class="va">W</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">het_dgp</span></span>
 <span><span class="co">#&gt; &lt;causalsim_dgp&gt;</span></span>
@@ -460,9 +460,9 @@ recovers the subgroup effects:</p>
 <span><span class="va">interact</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">A</span> <span class="op">*</span> <span class="va">V</span> <span class="op">+</span> <span class="va">W</span>, data <span class="op">=</span> <span class="va">d</span><span class="op">)</span>     <span class="co"># allows the effect to vary with V</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>  average      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">overall</span><span class="op">)</span><span class="op">[[</span><span class="st">"A"</span><span class="op">]</span><span class="op">]</span>,</span>
-<span>  subgroup_v0  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">interact</span><span class="op">)</span><span class="op">[[</span><span class="st">"A"</span><span class="op">]</span><span class="op">]</span>,</span>
-<span>  subgroup_v1  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">interact</span><span class="op">)</span><span class="op">[[</span><span class="st">"A"</span><span class="op">]</span><span class="op">]</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">interact</span><span class="op">)</span><span class="op">[[</span><span class="st">"A:V"</span><span class="op">]</span><span class="op">]</span></span>
+<span>  average <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">overall</span><span class="op">)</span><span class="op">[[</span><span class="st">"A"</span><span class="op">]</span><span class="op">]</span>,</span>
+<span>  subgroup_v0 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">interact</span><span class="op">)</span><span class="op">[[</span><span class="st">"A"</span><span class="op">]</span><span class="op">]</span>,</span>
+<span>  subgroup_v1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">interact</span><span class="op">)</span><span class="op">[[</span><span class="st">"A"</span><span class="op">]</span><span class="op">]</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">interact</span><span class="op">)</span><span class="op">[[</span><span class="st">"A:V"</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt;     average subgroup_v0 subgroup_v1 </span></span>
 <span><span class="co">#&gt;    3.499818    1.992688    5.054733</span></span></code></pre></div>

@@ -59,11 +59,11 @@ baseline shift.
 ``` r
 
 dgp <- causalsim_dgp(
-  n             = 500,
+  n = 500,
   n_confounders = 1,
-  effect        = 2,
-  propensity    = "moderate",
-  baseline      = "moderate"
+  effect = 2,
+  propensity = "moderate",
+  baseline = "moderate"
 )
 dgp
 #> <causalsim_dgp>
@@ -132,7 +132,7 @@ are optional but enable coverage and power metrics.
 naive_est <- function(data) {
   fit <- lm(Y ~ A, data = data)
   est <- coef(fit)[["A"]]
-  se  <- sqrt(vcov(fit)["A", "A"])
+  se <- sqrt(vcov(fit)["A", "A"])
   c(estimate = est, ci_lower = est - 1.96 * se, ci_upper = est + 1.96 * se)
 }
 
@@ -140,7 +140,7 @@ naive_est <- function(data) {
 ols_est <- function(data) {
   fit <- lm(Y ~ A + W, data = data)
   est <- coef(fit)[["A"]]
-  se  <- sqrt(vcov(fit)["A", "A"])
+  se <- sqrt(vcov(fit)["A", "A"])
   c(estimate = est, ci_lower = est - 1.96 * se, ci_upper = est + 1.96 * se)
 }
 ```
@@ -151,7 +151,7 @@ Named lists are also accepted, so the following is equivalent:
 
 ols_est <- function(data) {
   fit <- lm(Y ~ A + W, data = data)
-  ci  <- confint(fit)["A", ]
+  ci <- confint(fit)["A", ]
   list(
     estimate = coef(fit)["A"],
     ci_lower = ci[1],
@@ -250,12 +250,12 @@ precision improves with more data.
 ``` r
 
 grid_n <- causalsim_grid(
-  dgp       = dgp,
+  dgp = dgp,
   estimator = ols_est,
-  vary      = list(n = c(100L, 250L, 500L, 1000L)),
-  reps      = 300L,
-  metrics   = c("bias", "rmse"),
-  seed      = 1L
+  vary = list(n = c(100L, 250L, 500L, 1000L)),
+  reps = 300L,
+  metrics = c("bias", "rmse"),
+  seed = 1L
 )
 grid_n
 #> <causalsim_grid>  4 cells  vary: n  reps/cell: 300
@@ -333,14 +333,14 @@ and reference it in a function passed to `effect`:
 ``` r
 
 het_dgp <- causalsim_dgp(
-  n          = 4000,
+  n = 4000,
   covariates = list(
     W = covar("normal", role = "confounder"),
     V = covar("binary", role = "effect_modifier", prob = 0.5)
   ),
-  effect     = function(V) 2 + 3 * V,   # effect is 2 when V = 0, 5 when V = 1
+  effect = function(V) 2 + 3 * V,   # effect is 2 when V = 0, 5 when V = 1
   propensity = function(W) plogis(0.5 * W),
-  baseline   = function(W) W
+  baseline = function(W) W
 )
 het_dgp
 #> <causalsim_dgp>
@@ -380,9 +380,9 @@ overall <- lm(Y ~ A + W, data = d)         # assumes a constant effect
 interact <- lm(Y ~ A * V + W, data = d)     # allows the effect to vary with V
 
 c(
-  average      = coef(overall)[["A"]],
-  subgroup_v0  = coef(interact)[["A"]],
-  subgroup_v1  = coef(interact)[["A"]] + coef(interact)[["A:V"]]
+  average = coef(overall)[["A"]],
+  subgroup_v0 = coef(interact)[["A"]],
+  subgroup_v1 = coef(interact)[["A"]] + coef(interact)[["A:V"]]
 )
 #>     average subgroup_v0 subgroup_v1 
 #>    3.499818    1.992688    5.054733

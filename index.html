@@ -97,11 +97,11 @@
 <p><code><a href="reference/causalsim_dgp.html">causalsim_dgp()</a></code> specifies the structural model. Parameters can be scalars, preset strings, or functions of the covariate names.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dgp</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/causalsim_dgp.html">causalsim_dgp</a></span><span class="op">(</span></span>
-<span>  n             <span class="op">=</span> <span class="fl">500</span>,</span>
+<span>  n <span class="op">=</span> <span class="fl">500</span>,</span>
 <span>  n_confounders <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  effect        <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>  propensity    <span class="op">=</span> <span class="st">"moderate"</span>,</span>
-<span>  baseline      <span class="op">=</span> <span class="st">"moderate"</span></span>
+<span>  effect <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>  propensity <span class="op">=</span> <span class="st">"moderate"</span>,</span>
+<span>  baseline <span class="op">=</span> <span class="st">"moderate"</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">dgp</span></span></code></pre></div>
 </div>
@@ -121,7 +121,7 @@
 <code class="sourceCode R"><span><span class="va">ols_est</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">A</span> <span class="op">+</span> <span class="va">W</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span></span>
 <span>  <span class="va">est</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span><span class="op">[[</span><span class="st">"A"</span><span class="op">]</span><span class="op">]</span></span>
-<span>  <span class="va">se</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/vcov.html" class="external-link">vcov</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span><span class="op">[</span><span class="st">"A"</span>, <span class="st">"A"</span><span class="op">]</span><span class="op">)</span></span>
+<span>  <span class="va">se</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/vcov.html" class="external-link">vcov</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span><span class="op">[</span><span class="st">"A"</span>, <span class="st">"A"</span><span class="op">]</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>estimate <span class="op">=</span> <span class="va">est</span>, ci_lower <span class="op">=</span> <span class="va">est</span> <span class="op">-</span> <span class="fl">1.96</span> <span class="op">*</span> <span class="va">se</span>, ci_upper <span class="op">=</span> <span class="va">est</span> <span class="op">+</span> <span class="fl">1.96</span> <span class="op">*</span> <span class="va">se</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
@@ -137,12 +137,12 @@
 <p><code><a href="reference/causalsim_grid.html">causalsim_grid()</a></code> runs the evaluator over the Cartesian product of any DGP parameters, returning a tidy data frame of metrics for each cell.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">grid_result</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/causalsim_grid.html">causalsim_grid</a></span><span class="op">(</span></span>
-<span>  dgp       <span class="op">=</span> <span class="va">dgp</span>,</span>
+<span>  dgp <span class="op">=</span> <span class="va">dgp</span>,</span>
 <span>  estimator <span class="op">=</span> <span class="va">ols_est</span>,</span>
-<span>  vary      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100L</span>, <span class="fl">250L</span>, <span class="fl">500L</span>, <span class="fl">1000L</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  reps      <span class="op">=</span> <span class="fl">200L</span>,</span>
-<span>  metrics   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"bias"</span>, <span class="st">"rmse"</span><span class="op">)</span>,</span>
-<span>  seed      <span class="op">=</span> <span class="fl">1L</span></span>
+<span>  vary <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100L</span>, <span class="fl">250L</span>, <span class="fl">500L</span>, <span class="fl">1000L</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  reps <span class="op">=</span> <span class="fl">200L</span>,</span>
+<span>  metrics <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"bias"</span>, <span class="st">"rmse"</span><span class="op">)</span>,</span>
+<span>  seed <span class="op">=</span> <span class="fl">1L</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">grid_result</span></span></code></pre></div>
 </div>
@@ -152,7 +152,7 @@
 <p>Declare a covariate with <code>role = "effect_modifier"</code> and reference it in a function passed to <code>effect</code> to make the treatment effect vary across subgroups. The individual effects are stored in the <code>.tau</code> column as ground truth.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">het_dgp</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/causalsim_dgp.html">causalsim_dgp</a></span><span class="op">(</span></span>
-<span>  n          <span class="op">=</span> <span class="fl">2000</span>,</span>
+<span>  n <span class="op">=</span> <span class="fl">2000</span>,</span>
 <span>  covariates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>    W <span class="op">=</span> <span class="fu"><a href="reference/covar.html">covar</a></span><span class="op">(</span><span class="st">"normal"</span>, role <span class="op">=</span> <span class="st">"confounder"</span><span class="op">)</span>,</span>
 <span>    V <span class="op">=</span> <span class="fu"><a href="reference/covar.html">covar</a></span><span class="op">(</span><span class="st">"binary"</span>, role <span class="op">=</span> <span class="st">"effect_modifier"</span>, prob <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span>
