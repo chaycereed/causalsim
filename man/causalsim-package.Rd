@@ -19,7 +19,7 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Chayce Reed \email{code.jcr@gmail.com}
+\strong{Maintainer}: Chayce Reed \email{Chayce.Reed.HSE@dartmouth.edu}
 
 }
 \keyword{internal}
