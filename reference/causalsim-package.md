@@ -16,4 +16,4 @@ Useful links:
 
 ## Author
 
-**Maintainer**: Chayce Reed <code.jcr@gmail.com>
+**Maintainer**: Chayce Reed <Chayce.Reed.HSE@dartmouth.edu>
