@@ -15,9 +15,9 @@ Initial CRAN release.
   for simulating individual datasets from a DGP
 - [`causalsim_eval()`](https://chaycereed.github.io/causalsim/reference/causalsim_eval.md)
   for evaluating estimator performance over repeated replications
-- [`causalsim_grid()`](https://chaycereed.github.io/causalsim/reference/causalsim_grid.md)
+- [`causalsim_eval_grid()`](https://chaycereed.github.io/causalsim/reference/causalsim_eval_grid.md)
   for sweeping evaluation across a Cartesian product of DGP parameters
-- [`covar()`](https://chaycereed.github.io/causalsim/reference/covar.md)
+- [`causalsim_covar()`](https://chaycereed.github.io/causalsim/reference/causalsim_covar.md)
   for specifying covariate distributions and causal roles
 - [`summary()`](https://rdrr.io/r/base/summary.html) and
   [`plot()`](https://rdrr.io/r/graphics/plot.default.html) methods for

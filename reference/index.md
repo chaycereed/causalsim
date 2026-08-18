@@ -6,7 +6,7 @@
   : Simulate a causal dataset with known ground truth
 - [`causalsim_dgp()`](https://chaycereed.github.io/causalsim/reference/causalsim_dgp.md)
   : Create a causal data generating process
-- [`covar()`](https://chaycereed.github.io/causalsim/reference/covar.md)
+- [`causalsim_covar()`](https://chaycereed.github.io/causalsim/reference/causalsim_covar.md)
   : Define a covariate for a causal DGP
 - [`causalsim_draw()`](https://chaycereed.github.io/causalsim/reference/causalsim_draw.md)
   : Draw a dataset from a causal DGP
@@ -16,5 +16,5 @@
   : Summarise a causalsim_eval result
 - [`plot(`*`<causalsim_eval>`*`)`](https://chaycereed.github.io/causalsim/reference/plot.causalsim_eval.md)
   : Plot the distribution of estimates from a causalsim_eval result
-- [`causalsim_grid()`](https://chaycereed.github.io/causalsim/reference/causalsim_grid.md)
+- [`causalsim_eval_grid()`](https://chaycereed.github.io/causalsim/reference/causalsim_eval_grid.md)
   : Evaluate an estimator across a parameter grid

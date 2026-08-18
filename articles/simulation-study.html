@@ -156,7 +156,7 @@ over many replications, and sweeping across a parameter grid.</p>
 </tr>
 <tr class="odd">
 <td>4</td>
-<td><code><a href="../reference/causalsim_grid.html">causalsim_grid()</a></code></td>
+<td><code><a href="../reference/causalsim_eval_grid.html">causalsim_eval_grid()</a></code></td>
 <td>Sweep over sample sizes and confounding levels</td>
 </tr>
 </tbody>
@@ -335,15 +335,16 @@ ATE. Dashed line: mean estimate.
 <hr>
 </div>
 <div class="section level2">
-<h2 id="step-5-vary-sample-size-with-causalsim_grid">Step 5: Vary Sample Size with <code>causalsim_grid()</code><a class="anchor" aria-label="anchor" href="#step-5-vary-sample-size-with-causalsim_grid"></a>
+<h2 id="step-5-vary-sample-size-with-causalsim_eval_grid">Step 5: Vary Sample Size with
+<code>causalsim_eval_grid()</code><a class="anchor" aria-label="anchor" href="#step-5-vary-sample-size-with-causalsim_eval_grid"></a>
 </h2>
-<p><code><a href="../reference/causalsim_grid.html">causalsim_grid()</a></code> evaluates an estimator over the
+<p><code><a href="../reference/causalsim_eval_grid.html">causalsim_eval_grid()</a></code> evaluates an estimator over the
 Cartesian product of the supplied parameter values, returning a tidy
 data frame of metrics for each cell. Here we vary <code>n</code> across
 four levels to track how the OLS estimator’s precision improves with
 more data.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">grid_n</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/causalsim_grid.html">causalsim_grid</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">grid_n</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/causalsim_eval_grid.html">causalsim_eval_grid</a></span><span class="op">(</span></span>
 <span>  dgp <span class="op">=</span> <span class="va">dgp</span>,</span>
 <span>  estimator <span class="op">=</span> <span class="va">ols_est</span>,</span>
 <span>  vary <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100L</span>, <span class="fl">250L</span>, <span class="fl">500L</span>, <span class="fl">1000L</span><span class="op">)</span><span class="op">)</span>,</span>
@@ -352,7 +353,7 @@ more data.</p>
 <span>  seed <span class="op">=</span> <span class="fl">1L</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">grid_n</span></span>
-<span><span class="co">#&gt; &lt;causalsim_grid&gt;  4 cells  vary: n  reps/cell: 300</span></span>
+<span><span class="co">#&gt; &lt;causalsim_eval_grid&gt;  4 cells  vary: n  reps/cell: 300</span></span>
 <span><span class="co">#&gt;   metrics: bias, rmse</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;     n metric        value          se</span></span>
@@ -376,18 +377,18 @@ at every sample size.</p>
 <h2 id="step-6-vary-confounding-strength">Step 6: Vary Confounding Strength<a class="anchor" aria-label="anchor" href="#step-6-vary-confounding-strength"></a>
 </h2>
 <p>Varying the <code>propensity</code> preset shows how bias scales with
-confounding. Because <code><a href="../reference/causalsim_grid.html">causalsim_grid()</a></code> accepts one estimator
-at a time, we run it separately and combine the results.</p>
+confounding. Because <code><a href="../reference/causalsim_eval_grid.html">causalsim_eval_grid()</a></code> accepts one
+estimator at a time, we run it separately and combine the results.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">conf_levels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>propensity <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"low"</span>, <span class="st">"moderate"</span>, <span class="st">"high"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">grid_naive</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/causalsim_grid.html">causalsim_grid</a></span><span class="op">(</span><span class="va">dgp</span>, <span class="va">naive_est</span>,</span>
+<span><span class="va">grid_naive</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/causalsim_eval_grid.html">causalsim_eval_grid</a></span><span class="op">(</span><span class="va">dgp</span>, <span class="va">naive_est</span>,</span>
 <span>                             vary <span class="op">=</span> <span class="va">conf_levels</span>,</span>
 <span>                             reps <span class="op">=</span> <span class="fl">300L</span>,</span>
 <span>                             metrics <span class="op">=</span> <span class="st">"bias"</span>,</span>
 <span>                             seed <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">grid_ols</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/causalsim_grid.html">causalsim_grid</a></span><span class="op">(</span><span class="va">dgp</span>, <span class="va">ols_est</span>,</span>
+<span><span class="va">grid_ols</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/causalsim_eval_grid.html">causalsim_eval_grid</a></span><span class="op">(</span><span class="va">dgp</span>, <span class="va">ols_est</span>,</span>
 <span>                           vary <span class="op">=</span> <span class="va">conf_levels</span>,</span>
 <span>                           reps <span class="op">=</span> <span class="fl">300L</span>,</span>
 <span>                           metrics <span class="op">=</span> <span class="st">"bias"</span>,</span>
@@ -424,8 +425,8 @@ passed to <code>effect</code>:</p>
 <code class="sourceCode R"><span><span class="va">het_dgp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/causalsim_dgp.html">causalsim_dgp</a></span><span class="op">(</span></span>
 <span>  n <span class="op">=</span> <span class="fl">4000</span>,</span>
 <span>  covariates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>    W <span class="op">=</span> <span class="fu"><a href="../reference/covar.html">covar</a></span><span class="op">(</span><span class="st">"normal"</span>, role <span class="op">=</span> <span class="st">"confounder"</span><span class="op">)</span>,</span>
-<span>    V <span class="op">=</span> <span class="fu"><a href="../reference/covar.html">covar</a></span><span class="op">(</span><span class="st">"binary"</span>, role <span class="op">=</span> <span class="st">"effect_modifier"</span>, prob <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span>
+<span>    W <span class="op">=</span> <span class="fu"><a href="../reference/causalsim_covar.html">causalsim_covar</a></span><span class="op">(</span><span class="st">"normal"</span>, role <span class="op">=</span> <span class="st">"confounder"</span><span class="op">)</span>,</span>
+<span>    V <span class="op">=</span> <span class="fu"><a href="../reference/causalsim_covar.html">causalsim_covar</a></span><span class="op">(</span><span class="st">"binary"</span>, role <span class="op">=</span> <span class="st">"effect_modifier"</span>, prob <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span>
 <span>  <span class="op">)</span>,</span>
 <span>  effect <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">V</span><span class="op">)</span> <span class="fl">2</span> <span class="op">+</span> <span class="fl">3</span> <span class="op">*</span> <span class="va">V</span>,   <span class="co"># effect is 2 when V = 0, 5 when V = 1</span></span>
 <span>  propensity <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">W</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/stats/Logistic.html" class="external-link">plogis</a></span><span class="op">(</span><span class="fl">0.5</span> <span class="op">*</span> <span class="va">W</span><span class="op">)</span>,</span>
@@ -500,8 +501,8 @@ function to <code>effect</code>
 </tr>
 <tr class="odd">
 <td>Non-normal covariates</td>
-<td>Use <code>covar("binary")</code> or <code>covar("uniform")</code> in
-<code>covariates</code>
+<td>Use <code>causalsim_covar("binary")</code> or
+<code>causalsim_covar("uniform")</code> in <code>covariates</code>
 </td>
 </tr>
 <tr class="even">
@@ -519,7 +520,7 @@ function to <code>effect</code>
 </tbody>
 </table>
 <p>See <code><a href="../reference/causalsim.html">?causalsim</a></code>, <code><a href="../reference/causalsim_dgp.html">?causalsim_dgp</a></code>, and
-<code><a href="../reference/covar.html">?covar</a></code> for the full API.</p>
+<code><a href="../reference/causalsim_covar.html">?causalsim_covar</a></code> for the full API.</p>
 <hr>
 </div>
 <div class="section level2">

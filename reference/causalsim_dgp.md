@@ -3,7 +3,7 @@
 Defines a causal DGP with known ground truth. Covariates can be
 specified via shorthand count arguments (Option B), an explicit named
 list of
-[`covar()`](https://chaycereed.github.io/causalsim/reference/covar.md)
+[`causalsim_covar()`](https://chaycereed.github.io/causalsim/reference/causalsim_covar.md)
 objects (Option A), or both combined.
 
 ## Usage
@@ -66,7 +66,7 @@ causalsim_dgp(
 - covariates:
 
   Named list of
-  [`covar()`](https://chaycereed.github.io/causalsim/reference/covar.md)
+  [`causalsim_covar()`](https://chaycereed.github.io/causalsim/reference/causalsim_covar.md)
   objects (Option A / explicit path). Each name becomes the column name
   in generated data and the argument name expected by `effect`,
   `propensity`, and `baseline` functions. Merged with any auto-generated
@@ -103,7 +103,7 @@ An S3 object of class `causalsim_dgp` with components:
 - `covar_spec`:
 
   Named list of
-  [`covar()`](https://chaycereed.github.io/causalsim/reference/covar.md)
+  [`causalsim_covar()`](https://chaycereed.github.io/causalsim/reference/causalsim_covar.md)
   objects
 
 - `effect_fn`:
@@ -182,8 +182,8 @@ dgp
 dgp2 <- causalsim_dgp(
   n = 500,
   covariates = list(
-    W = covar("normal", role = "confounder"),
-    V = covar("binary", role = "effect_modifier", prob = 0.4)
+    W = causalsim_covar("normal", role = "confounder"),
+    V = causalsim_covar("binary", role = "effect_modifier", prob = 0.4)
   ),
   effect = function(V) 2 + 1.5 * V,
   propensity = function(W) plogis(0.5 * W),
@@ -194,7 +194,7 @@ dgp2 <- causalsim_dgp(
 dgp3 <- causalsim_dgp(
   n = 1000,
   n_confounders = 2,
-  covariates = list(X = covar("normal", role = "noise")),
+  covariates = list(X = causalsim_covar("normal", role = "noise")),
   effect = 1,
   propensity = 0.5
 )

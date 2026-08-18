@@ -68,7 +68,7 @@ causalsim(
 - covariates:
 
   Named list of
-  [`covar()`](https://chaycereed.github.io/causalsim/reference/covar.md)
+  [`causalsim_covar()`](https://chaycereed.github.io/causalsim/reference/causalsim_covar.md)
   objects (Option A / explicit path). Each name becomes the column name
   in generated data and the argument name expected by `effect`,
   `propensity`, and `baseline` functions. Merged with any auto-generated
@@ -142,8 +142,8 @@ head(data)
 data2 <- causalsim(
   n = 500,
   covariates = list(
-    W = covar("normal", role = "confounder"),
-    V = covar("binary", role = "effect_modifier", prob = 0.4)
+    W = causalsim_covar("normal", role = "confounder"),
+    V = causalsim_covar("binary", role = "effect_modifier", prob = 0.4)
   ),
   effect = function(V) 2 + 1.5 * V,
   propensity = function(W) plogis(0.5 * W),

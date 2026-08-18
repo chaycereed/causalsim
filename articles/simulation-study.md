@@ -30,7 +30,7 @@ sweeping across a parameter grid.
 | 1 | [`causalsim_dgp()`](https://chaycereed.github.io/causalsim/reference/causalsim_dgp.md) | Define the structural model and true ATE |
 | 2 | [`causalsim_draw()`](https://chaycereed.github.io/causalsim/reference/causalsim_draw.md) | Simulate one dataset and inspect it |
 | 3 | [`causalsim_eval()`](https://chaycereed.github.io/causalsim/reference/causalsim_eval.md) | Measure estimator performance over many replications |
-| 4 | [`causalsim_grid()`](https://chaycereed.github.io/causalsim/reference/causalsim_grid.md) | Sweep over sample sizes and confounding levels |
+| 4 | [`causalsim_eval_grid()`](https://chaycereed.github.io/causalsim/reference/causalsim_eval_grid.md) | Sweep over sample sizes and confounding levels |
 
 ``` r
 
@@ -239,9 +239,9 @@ ATE. Dashed line: mean estimate.
 
 ------------------------------------------------------------------------
 
-## Step 5: Vary Sample Size with `causalsim_grid()`
+## Step 5: Vary Sample Size with `causalsim_eval_grid()`
 
-[`causalsim_grid()`](https://chaycereed.github.io/causalsim/reference/causalsim_grid.md)
+[`causalsim_eval_grid()`](https://chaycereed.github.io/causalsim/reference/causalsim_eval_grid.md)
 evaluates an estimator over the Cartesian product of the supplied
 parameter values, returning a tidy data frame of metrics for each cell.
 Here we vary `n` across four levels to track how the OLS estimator’s
@@ -249,7 +249,7 @@ precision improves with more data.
 
 ``` r
 
-grid_n <- causalsim_grid(
+grid_n <- causalsim_eval_grid(
   dgp = dgp,
   estimator = ols_est,
   vary = list(n = c(100L, 250L, 500L, 1000L)),
@@ -258,7 +258,7 @@ grid_n <- causalsim_grid(
   seed = 1L
 )
 grid_n
-#> <causalsim_grid>  4 cells  vary: n  reps/cell: 300
+#> <causalsim_eval_grid>  4 cells  vary: n  reps/cell: 300
 #>   metrics: bias, rmse
 #> 
 #>     n metric        value          se
@@ -282,7 +282,7 @@ Bias stays near zero at every sample size.
 
 Varying the `propensity` preset shows how bias scales with confounding.
 Because
-[`causalsim_grid()`](https://chaycereed.github.io/causalsim/reference/causalsim_grid.md)
+[`causalsim_eval_grid()`](https://chaycereed.github.io/causalsim/reference/causalsim_eval_grid.md)
 accepts one estimator at a time, we run it separately and combine the
 results.
 
@@ -290,13 +290,13 @@ results.
 
 conf_levels <- list(propensity = c("low", "moderate", "high"))
 
-grid_naive <- causalsim_grid(dgp, naive_est,
+grid_naive <- causalsim_eval_grid(dgp, naive_est,
                              vary = conf_levels,
                              reps = 300L,
                              metrics = "bias",
                              seed = 1L)
 
-grid_ols <- causalsim_grid(dgp, ols_est,
+grid_ols <- causalsim_eval_grid(dgp, ols_est,
                            vary = conf_levels,
                            reps = 300L,
                            metrics = "bias",
@@ -335,8 +335,8 @@ and reference it in a function passed to `effect`:
 het_dgp <- causalsim_dgp(
   n = 4000,
   covariates = list(
-    W = covar("normal", role = "confounder"),
-    V = covar("binary", role = "effect_modifier", prob = 0.5)
+    W = causalsim_covar("normal", role = "confounder"),
+    V = causalsim_covar("binary", role = "effect_modifier", prob = 0.5)
   ),
   effect = function(V) 2 + 3 * V,   # effect is 2 when V = 0, 5 when V = 1
   propensity = function(W) plogis(0.5 * W),
@@ -405,7 +405,7 @@ A few directions:
 |----|----|
 | Just generate data | Use [`causalsim()`](https://chaycereed.github.io/causalsim/reference/causalsim.md) for a single dataset in one call |
 | Heterogeneous effects | See Step 7 — declare an `effect_modifier` and pass a function to `effect` |
-| Non-normal covariates | Use `covar("binary")` or `covar("uniform")` in `covariates` |
+| Non-normal covariates | Use `causalsim_covar("binary")` or `causalsim_covar("uniform")` in `covariates` |
 | Multiple confounders | Set `n_confounders = 3` or pass named `covariates` |
 | Custom covariate structure | Mix `n_confounders` with explicit `covariates = list(...)` |
 
@@ -413,7 +413,7 @@ See
 [`?causalsim`](https://chaycereed.github.io/causalsim/reference/causalsim.md),
 [`?causalsim_dgp`](https://chaycereed.github.io/causalsim/reference/causalsim_dgp.md),
 and
-[`?covar`](https://chaycereed.github.io/causalsim/reference/covar.md)
+[`?causalsim_covar`](https://chaycereed.github.io/causalsim/reference/causalsim_covar.md)
 for the full API.
 
 ------------------------------------------------------------------------
