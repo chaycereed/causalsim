@@ -82,10 +82,10 @@ plot(result)
 
 ### Evaluate across a parameter grid
 
-`causalsim_grid()` runs the evaluator over the Cartesian product of any DGP parameters, returning a tidy data frame of metrics for each cell.
+`causalsim_eval_grid()` runs the evaluator over the Cartesian product of any DGP parameters, returning a tidy data frame of metrics for each cell.
 
 ```r
-grid_result <- causalsim_grid(
+grid_result <- causalsim_eval_grid(
   dgp = dgp,
   estimator = ols_est,
   vary = list(n = c(100L, 250L, 500L, 1000L)),
@@ -106,8 +106,8 @@ The individual effects are stored in the `.tau` column as ground truth.
 het_dgp <- causalsim_dgp(
   n = 2000,
   covariates = list(
-    W = covar("normal", role = "confounder"),
-    V = covar("binary", role = "effect_modifier", prob = 0.5)
+    W = causalsim_covar("normal", role = "confounder"),
+    V = causalsim_covar("binary", role = "effect_modifier", prob = 0.5)
   ),
   effect     = function(V) 2 + 3 * V   # effect is 2 when V = 0, 5 when V = 1
 )

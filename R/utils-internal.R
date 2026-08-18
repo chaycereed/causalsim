@@ -32,7 +32,10 @@
   )
 
   if (!is.list(covariates)) {
-    stop("`covariates` must be a named list of covar() objects.", call. = FALSE)
+    stop(
+      "`covariates` must be a named list of causalsim_covar() objects.",
+      call. = FALSE
+    )
   }
   if (length(covariates) > 0L) {
     if (is.null(names(covariates)) || any(names(covariates) == "")) {
@@ -43,7 +46,7 @@
     )
     if (any(not_covar)) {
       stop(
-        "All elements of `covariates` must be covar() objects.",
+        "All elements of `covariates` must be causalsim_covar() objects.",
         call. = FALSE
       )
     }
@@ -70,7 +73,9 @@
 .auto_covariates <- function(n, role, prefix) {
   if (n == 0L) return(list())
   nms  <- if (n == 1L) prefix else paste0(prefix, seq_len(n))
-  covs <- replicate(n, covar(dist = "normal", role = role), simplify = FALSE)
+  covs <- replicate(
+    n, causalsim_covar(dist = "normal", role = role), simplify = FALSE
+  )
   stats::setNames(covs, nms)
 }
 

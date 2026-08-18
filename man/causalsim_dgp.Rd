@@ -45,7 +45,8 @@ constant baseline that ignores covariates.}
 \item{sigma}{Positive numeric. Standard deviation of the outcome noise term.
 Default \code{1}.}
 
-\item{covariates}{Named list of \code{\link[=covar]{covar()}} objects (Option A / explicit path).
+\item{covariates}{Named list of \code{\link[=causalsim_covar]{causalsim_covar()}} objects (Option A /
+explicit path).
 Each name becomes the column name in generated data and the argument name
 expected by \code{effect}, \code{propensity}, and \code{baseline} functions. Merged with
 any auto-generated covariates; name collisions error.}
@@ -66,7 +67,7 @@ approximation. Default \code{10000L}. Ignored for scalar \code{effect}.}
 An S3 object of class \code{causalsim_dgp} with components:
 \describe{
 \item{\code{n}}{Sample size (integer)}
-\item{\code{covar_spec}}{Named list of \code{\link[=covar]{covar()}} objects}
+\item{\code{covar_spec}}{Named list of \code{\link[=causalsim_covar]{causalsim_covar()}} objects}
 \item{\code{effect_fn}}{Normalized effect function}
 \item{\code{propensity_fn}}{Normalized propensity function}
 \item{\code{baseline_fn}}{Normalized baseline function}
@@ -79,7 +80,7 @@ An S3 object of class \code{causalsim_dgp} with components:
 \description{
 Defines a causal DGP with known ground truth. Covariates can be specified
 via shorthand count arguments (Option B), an explicit named list of
-\code{\link[=covar]{covar()}} objects (Option A), or both combined.
+\code{\link[=causalsim_covar]{causalsim_covar()}} objects (Option A), or both combined.
 }
 \details{
 \subsection{Structural model}{
@@ -124,8 +125,8 @@ dgp
 dgp2 <- causalsim_dgp(
   n = 500,
   covariates = list(
-    W = covar("normal", role = "confounder"),
-    V = covar("binary", role = "effect_modifier", prob = 0.4)
+    W = causalsim_covar("normal", role = "confounder"),
+    V = causalsim_covar("binary", role = "effect_modifier", prob = 0.4)
   ),
   effect = function(V) 2 + 1.5 * V,
   propensity = function(W) plogis(0.5 * W),
@@ -136,7 +137,7 @@ dgp2 <- causalsim_dgp(
 dgp3 <- causalsim_dgp(
   n = 1000,
   n_confounders = 2,
-  covariates = list(X = covar("normal", role = "noise")),
+  covariates = list(X = causalsim_covar("normal", role = "noise")),
   effect = 1,
   propensity = 0.5
 )

@@ -28,7 +28,7 @@
 #' my_estimator <- function(data) {
 #'   fit <- lm(Y ~ A + W, data = data)
 #'   est <- coef(fit)["A"]
-#'   se  <- sqrt(vcov(fit)["A", "A"])
+#'   se <- sqrt(vcov(fit)["A", "A"])
 #'   c(estimate = est, ci_lower = est - 1.96 * se, ci_upper = est + 1.96 * se)
 #' }
 #' ```
@@ -71,7 +71,7 @@
 #' ols_estimator <- function(data) {
 #'   fit <- lm(Y ~ A + W, data = data)
 #'   est <- coef(fit)[["A"]]
-#'   se  <- sqrt(vcov(fit)["A", "A"])
+#'   se <- sqrt(vcov(fit)["A", "A"])
 #'   c(estimate = est, ci_lower = est - 1.96 * se, ci_upper = est + 1.96 * se)
 #' }
 #'

@@ -2,7 +2,7 @@
 #'
 #' Defines a causal DGP with known ground truth. Covariates can be specified
 #' via shorthand count arguments (Option B), an explicit named list of
-#' [covar()] objects (Option A), or both combined.
+#' [causalsim_covar()] objects (Option A), or both combined.
 #'
 #' @param n Positive integer. Sample size for each simulated dataset.
 #' @param effect Numeric scalar or function. A scalar specifies a constant
@@ -26,7 +26,8 @@
 #'   constant baseline that ignores covariates.
 #' @param sigma Positive numeric. Standard deviation of the outcome noise term.
 #'   Default `1`.
-#' @param covariates Named list of [covar()] objects (Option A / explicit path).
+#' @param covariates Named list of [causalsim_covar()] objects (Option A /
+#'   explicit path).
 #'   Each name becomes the column name in generated data and the argument name
 #'   expected by `effect`, `propensity`, and `baseline` functions. Merged with
 #'   any auto-generated covariates; name collisions error.
@@ -75,7 +76,7 @@
 #' @return An S3 object of class `causalsim_dgp` with components:
 #' \describe{
 #'   \item{`n`}{Sample size (integer)}
-#'   \item{`covar_spec`}{Named list of [covar()] objects}
+#'   \item{`covar_spec`}{Named list of [causalsim_covar()] objects}
 #'   \item{`effect_fn`}{Normalized effect function}
 #'   \item{`propensity_fn`}{Normalized propensity function}
 #'   \item{`baseline_fn`}{Normalized baseline function}
@@ -94,8 +95,8 @@
 #' dgp2 <- causalsim_dgp(
 #'   n = 500,
 #'   covariates = list(
-#'     W = covar("normal", role = "confounder"),
-#'     V = covar("binary", role = "effect_modifier", prob = 0.4)
+#'     W = causalsim_covar("normal", role = "confounder"),
+#'     V = causalsim_covar("binary", role = "effect_modifier", prob = 0.4)
 #'   ),
 #'   effect = function(V) 2 + 1.5 * V,
 #'   propensity = function(W) plogis(0.5 * W),
@@ -106,7 +107,7 @@
 #' dgp3 <- causalsim_dgp(
 #'   n = 1000,
 #'   n_confounders = 2,
-#'   covariates = list(X = covar("normal", role = "noise")),
+#'   covariates = list(X = causalsim_covar("normal", role = "noise")),
 #'   effect = 1,
 #'   propensity = 0.5
 #' )
@@ -127,7 +128,7 @@ causalsim_dgp <- function(
   n <- .validate_positive(n, "n", as_int = TRUE)
   mc_draws <- .validate_positive(mc_draws, "mc_draws", as_int = TRUE)
   sigma <- .validate_positive(sigma, "sigma")
-  n_confounders      <- .validate_nonneg(
+  n_confounders <- .validate_nonneg(
     n_confounders, "n_confounders", as_int = TRUE
   )
   n_effect_modifiers <- .validate_nonneg(

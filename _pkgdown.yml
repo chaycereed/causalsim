@@ -62,12 +62,12 @@ reference:
     contents:
       - causalsim
       - causalsim_dgp
-      - covar
+      - causalsim_covar
       - causalsim_draw
       - causalsim_eval
       - summary.causalsim_eval
       - plot.causalsim_eval
-      - causalsim_grid
+      - causalsim_eval_grid
 
 # ------------------------------------------------------------------
 # Footer

@@ -46,7 +46,8 @@ constant baseline that ignores covariates.}
 \item{sigma}{Positive numeric. Standard deviation of the outcome noise term.
 Default \code{1}.}
 
-\item{covariates}{Named list of \code{\link[=covar]{covar()}} objects (Option A / explicit path).
+\item{covariates}{Named list of \code{\link[=causalsim_covar]{causalsim_covar()}} objects (Option A /
+explicit path).
 Each name becomes the column name in generated data and the argument name
 expected by \code{effect}, \code{propensity}, and \code{baseline} functions. Merged with
 any auto-generated covariates; name collisions error.}
@@ -95,8 +96,8 @@ head(data)
 data2 <- causalsim(
   n = 500,
   covariates = list(
-    W = covar("normal", role = "confounder"),
-    V = covar("binary", role = "effect_modifier", prob = 0.4)
+    W = causalsim_covar("normal", role = "confounder"),
+    V = causalsim_covar("binary", role = "effect_modifier", prob = 0.4)
   ),
   effect = function(V) 2 + 1.5 * V,
   propensity = function(W) plogis(0.5 * W),

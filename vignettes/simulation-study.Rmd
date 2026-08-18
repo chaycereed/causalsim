@@ -89,7 +89,7 @@ grid.
 | 1 | `causalsim_dgp()` | Define the structural model and true ATE |
 | 2 | `causalsim_draw()` | Simulate one dataset and inspect it |
 | 3 | `causalsim_eval()` | Measure estimator performance over many replications |
-| 4 | `causalsim_grid()` | Sweep over sample sizes and confounding levels |
+| 4 | `causalsim_eval_grid()` | Sweep over sample sizes and confounding levels |
 
 ```{r library}
 library(causalsim)
@@ -231,15 +231,15 @@ plot(eval_ols)
 
 ---
 
-## Step 5: Vary Sample Size with `causalsim_grid()`
+## Step 5: Vary Sample Size with `causalsim_eval_grid()`
 
-`causalsim_grid()` evaluates an estimator over the Cartesian product of the
+`causalsim_eval_grid()` evaluates an estimator over the Cartesian product of the
 supplied parameter values, returning a tidy data frame of metrics for each cell.
 Here we vary `n` across four levels to track how the OLS estimator's precision
 improves with more data.
 
 ```{r grid-n}
-grid_n <- causalsim_grid(
+grid_n <- causalsim_eval_grid(
   dgp = dgp,
   estimator = ols_est,
   vary = list(n = c(100L, 250L, 500L, 1000L)),
@@ -259,19 +259,19 @@ every sample size.
 ## Step 6: Vary Confounding Strength
 
 Varying the `propensity` preset shows how bias scales with confounding. Because
-`causalsim_grid()` accepts one estimator at a time, we run it separately and
+`causalsim_eval_grid()` accepts one estimator at a time, we run it separately and
 combine the results.
 
 ```{r grid-confounding}
 conf_levels <- list(propensity = c("low", "moderate", "high"))
 
-grid_naive <- causalsim_grid(dgp, naive_est,
+grid_naive <- causalsim_eval_grid(dgp, naive_est,
                              vary = conf_levels,
                              reps = 300L,
                              metrics = "bias",
                              seed = 1L)
 
-grid_ols <- causalsim_grid(dgp, ols_est,
+grid_ols <- causalsim_eval_grid(dgp, ols_est,
                            vary = conf_levels,
                            reps = 300L,
                            metrics = "bias",
@@ -301,8 +301,8 @@ in a function passed to `effect`:
 het_dgp <- causalsim_dgp(
   n = 4000,
   covariates = list(
-    W = covar("normal", role = "confounder"),
-    V = covar("binary", role = "effect_modifier", prob = 0.5)
+    W = causalsim_covar("normal", role = "confounder"),
+    V = causalsim_covar("binary", role = "effect_modifier", prob = 0.5)
   ),
   effect = function(V) 2 + 3 * V,   # effect is 2 when V = 0, 5 when V = 1
   propensity = function(W) plogis(0.5 * W),
@@ -356,11 +356,11 @@ directions:
 |---|---|
 | Just generate data | Use `causalsim()` for a single dataset in one call |
 | Heterogeneous effects | See Step 7 — declare an `effect_modifier` and pass a function to `effect` |
-| Non-normal covariates | Use `covar("binary")` or `covar("uniform")` in `covariates` |
+| Non-normal covariates | Use `causalsim_covar("binary")` or `causalsim_covar("uniform")` in `covariates` |
 | Multiple confounders | Set `n_confounders = 3` or pass named `covariates` |
 | Custom covariate structure | Mix `n_confounders` with explicit `covariates = list(...)` |
 
-See `?causalsim`, `?causalsim_dgp`, and `?covar` for the full API.
+See `?causalsim`, `?causalsim_dgp`, and `?causalsim_covar` for the full API.
 
 ---
 

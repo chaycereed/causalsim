@@ -23,7 +23,7 @@
 #' @details
 #' ## How it works
 #'
-#' For each cell in `expand.grid(vary)`, `causalsim_grid()` takes `dgp`'s
+#' For each cell in `expand.grid(vary)`, `causalsim_eval_grid()` takes `dgp`'s
 #' stored original parameters, overrides the cell's values, reconstructs a
 #' new [causalsim_dgp()], runs [causalsim_eval()], and tags the resulting
 #' metrics with the cell's parameter values.
@@ -32,15 +32,15 @@
 #'
 #' Elements of `vary` must be atomic vectors (character, numeric, integer).
 #' Functions cannot be varied via this interface. `covariates` (a list of
-#' [covar()] objects) is excluded. For complex covariate variation, construct
-#' DGPs manually and use [causalsim_eval()] directly.
+#' [causalsim_covar()] objects) is excluded. For complex covariate variation,
+#' construct DGPs manually and use [causalsim_eval()] directly.
 #'
 #' Note that varying `n_confounders` from 1 to 2 changes auto-generated
 #' covariate names from `W` to `W1, W2`. If the base DGP's `effect` function
 #' references `W`, the reconstructed DGP will error at construction time.
 #' Design the base DGP accordingly.
 #'
-#' @return An S3 object of class `causalsim_grid` with components:
+#' @return An S3 object of class `causalsim_eval_grid` with components:
 #' \describe{
 #'   \item{`results`}{Tidy data frame: one row per (cell, metric).
 #'     Columns: grid parameter names, `metric`, `value`, `se`.}
@@ -62,7 +62,7 @@
 #' }
 #'
 #' \donttest{
-#' grid_result <- causalsim_grid(
+#' grid_result <- causalsim_eval_grid(
 #'   dgp = dgp,
 #'   estimator = ols_estimator,
 #'   vary = list(n = c(250L, 500L, 1000L)),
@@ -73,7 +73,7 @@
 #' }
 #'
 #' @export
-causalsim_grid <- function(
+causalsim_eval_grid <- function(
   dgp,
   estimator,
   vary,
@@ -139,15 +139,15 @@ causalsim_grid <- function(
       reps = reps,
       metrics = metrics
     ),
-    class = "causalsim_grid"
+    class = "causalsim_eval_grid"
   )
 }
 
 #' @export
-print.causalsim_grid <- function(x, n = 10L, ...) {
+print.causalsim_eval_grid <- function(x, n = 10L, ...) {
   n_cells <- nrow(x$grid)
   cat(sprintf(
-    "<causalsim_grid>  %d cell%s  vary: %s  reps/cell: %d\n",
+    "<causalsim_eval_grid>  %d cell%s  vary: %s  reps/cell: %d\n",
     n_cells,
     if (n_cells == 1L) "" else "s",
     paste(x$vary, collapse = ", "),
@@ -179,11 +179,11 @@ print.causalsim_grid <- function(x, n = 10L, ...) {
   }
 
   valid_nms <- setdiff(names(formals(causalsim_dgp)), "covariates")
-  invalid   <- setdiff(names(vary), valid_nms)
+  invalid <- setdiff(names(vary), valid_nms)
   if (length(invalid) > 0L) {
     stop(
       paste0(
-        "`vary` contains name(s) that are not a valid causalsim_dgp() argument: ",
+        "`vary` name(s) not a valid causalsim_dgp() argument: ",
         paste(invalid, collapse = ", ")
       ),
       call. = FALSE

@@ -168,8 +168,8 @@ test_that("explicit covariates list is stored on DGP", {
   dgp <- causalsim_dgp(
     n = 100,
     covariates = list(
-      W = covar("normal", role = "confounder"),
-      V = covar("binary", role = "effect_modifier", prob = 0.4)
+      W = causalsim_covar("normal", role = "confounder"),
+      V = causalsim_covar("binary", role = "effect_modifier", prob = 0.4)
     ),
     effect = function(V) 1 + V
   )
@@ -183,7 +183,7 @@ test_that("shorthand and explicit covariates merge correctly", {
   dgp <- causalsim_dgp(
     n = 100,
     n_confounders = 1,
-    covariates    = list(Z = covar("normal", role = "noise")),
+    covariates    = list(Z = causalsim_covar("normal", role = "noise")),
     effect        = 1
   )
   expect_named(dgp$covar_spec, c("W", "Z"))
@@ -194,7 +194,7 @@ test_that("name collision between auto and explicit covariates errors", {
     causalsim_dgp(
       n = 100,
       n_confounders = 1,
-      covariates    = list(W = covar("binary", role = "confounder")),
+      covariates    = list(W = causalsim_covar("binary", role = "confounder")),
       effect        = 1
     ),
     "appear in both"
@@ -241,15 +241,15 @@ test_that("non-numeric non-function effect throws error", {
 
 test_that("unnamed covariates list throws error", {
   expect_error(
-    causalsim_dgp(n = 100, covariates = list(covar("normal"))),
+    causalsim_dgp(n = 100, covariates = list(causalsim_covar("normal"))),
     "must be named"
   )
 })
 
-test_that("non-covar element in covariates list throws error", {
+test_that("non-causalsim_covar element in covariates list throws error", {
   expect_error(
     causalsim_dgp(n = 100, covariates = list(W = list(dist = "normal"))),
-    "covar\\(\\) objects"
+    "causalsim_covar\\(\\) objects"
   )
 })
 

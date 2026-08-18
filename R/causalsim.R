@@ -31,8 +31,8 @@
 #' data2 <- causalsim(
 #'   n = 500,
 #'   covariates = list(
-#'     W = covar("normal", role = "confounder"),
-#'     V = covar("binary", role = "effect_modifier", prob = 0.4)
+#'     W = causalsim_covar("normal", role = "confounder"),
+#'     V = causalsim_covar("binary", role = "effect_modifier", prob = 0.4)
 #'   ),
 #'   effect = function(V) 2 + 1.5 * V,
 #'   propensity = function(W) plogis(0.5 * W),

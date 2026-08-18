@@ -27,16 +27,16 @@
 #'
 #' @examples
 #' # Standard normal confounder
-#' covar("normal", role = "confounder", mean = 0, sd = 1)
+#' causalsim_covar("normal", role = "confounder", mean = 0, sd = 1)
 #'
 #' # Binary effect modifier
-#' covar("binary", role = "effect_modifier", prob = 0.4)
+#' causalsim_covar("binary", role = "effect_modifier", prob = 0.4)
 #'
 #' # Variable that both confounds and moderates the effect
-#' covar("normal", role = c("confounder", "effect_modifier"))
+#' causalsim_covar("normal", role = c("confounder", "effect_modifier"))
 #'
 #' @export
-covar <- function(dist = "normal", role = "confounder", ...) {
+causalsim_covar <- function(dist = "normal", role = "confounder", ...) {
   dist <- match.arg(dist, c("normal", "binary", "uniform"))
   role <- match.arg(
     role,

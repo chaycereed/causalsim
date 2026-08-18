@@ -3,7 +3,7 @@
 ## Test environments
 
 - Local: macOS 26.1 (aarch64-apple-darwin), R 4.5.2
-- win-builder: Windows Server 2022 x64, R-devel (2026-08-12 r90394 ucrt)
+- win-builder: Windows Server 2022 x64, R-devel (2026-08-17 r90424 ucrt)
 
 ## R CMD check results
 

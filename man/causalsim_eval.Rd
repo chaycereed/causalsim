@@ -54,7 +54,7 @@ numeric vector or one-row data frame with at minimum:
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{my_estimator <- function(data) \{
   fit <- lm(Y ~ A + W, data = data)
   est <- coef(fit)["A"]
-  se  <- sqrt(vcov(fit)["A", "A"])
+  se <- sqrt(vcov(fit)["A", "A"])
   c(estimate = est, ci_lower = est - 1.96 * se, ci_upper = est + 1.96 * se)
 \}
 }\if{html}{\out{</div>}}
@@ -92,7 +92,7 @@ dgp <- causalsim_dgp(n = 300, n_confounders = 1, effect = 2,
 ols_estimator <- function(data) {
   fit <- lm(Y ~ A + W, data = data)
   est <- coef(fit)[["A"]]
-  se  <- sqrt(vcov(fit)["A", "A"])
+  se <- sqrt(vcov(fit)["A", "A"])
   c(estimate = est, ci_lower = est - 1.96 * se, ci_upper = est + 1.96 * se)
 }
 
