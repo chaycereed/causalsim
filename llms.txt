@@ -151,25 +151,6 @@ inert, and
 [`causalsim_dgp()`](https://chaycereed.github.io/causalsim/reference/causalsim_dgp.md)
 warns when that happens.
 
-## Roadmap
-
-Planned for a future release:
-
-- **Additional covariate roles.** The current roles (`confounder`,
-  `effect_modifier`, `noise`) cover the common cases. Two single-path
-  roles would complete the treatment/outcome taxonomy:
-  - `instrument` — drives treatment only (enters the propensity model,
-    excluded from the outcome), for benchmarking instrumental-variable
-    estimators.
-  - `prognostic` — drives the outcome only (enters the baseline,
-    independent of treatment), for studying precision covariates and
-    variance reduction.
-
-  These will ship together with worked examples that demonstrate each
-  (an IV estimator and a variance-reduction comparison, respectively).
-- **Assumption-violation helpers.** First-class support for unmeasured
-  confounding and positivity violations.
-
 ## License
 
 MIT License. See `LICENSE` for details.

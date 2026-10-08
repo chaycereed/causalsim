@@ -2,6 +2,8 @@
 
 ## causalsim 0.1.0
 
+CRAN release: 2026-08-30
+
 Initial CRAN release.
 
 - [`causalsim()`](https://chaycereed.github.io/causalsim/reference/causalsim.md)

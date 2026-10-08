@@ -166,24 +166,6 @@
 </div>
 </div>
 <div class="section level2">
-<h2 id="roadmap">Roadmap<a class="anchor" aria-label="anchor" href="#roadmap"></a>
-</h2>
-<p>Planned for a future release:</p>
-<ul>
-<li>
-<strong>Additional covariate roles.</strong> The current roles (<code>confounder</code>, <code>effect_modifier</code>, <code>noise</code>) cover the common cases. Two single-path roles would complete the treatment/outcome taxonomy:
-<ul>
-<li>
-<code>instrument</code> — drives treatment only (enters the propensity model, excluded from the outcome), for benchmarking instrumental-variable estimators.</li>
-<li>
-<code>prognostic</code> — drives the outcome only (enters the baseline, independent of treatment), for studying precision covariates and variance reduction.</li>
-</ul>
-These will ship together with worked examples that demonstrate each (an IV estimator and a variance-reduction comparison, respectively).</li>
-<li>
-<strong>Assumption-violation helpers.</strong> First-class support for unmeasured confounding and positivity violations.</li>
-</ul>
-</div>
-<div class="section level2">
 <h2 id="license">License<a class="anchor" aria-label="anchor" href="#license"></a>
 </h2>
 <p>MIT License. See <code>LICENSE</code> for details.</p>
@@ -192,6 +174,7 @@ These will ship together with worked examples that demonstrate each (an IV estim
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
+<li><a href="https://cloud.r-project.org/package=causalsim" class="external-link">View on CRAN</a></li>
 <li><a href="https://github.com/chaycereed/causalsim/" class="external-link">Browse source code</a></li>
 <li><a href="https://github.com/chaycereed/causalsim/issues" class="external-link">Report a bug</a></li>
 <li><a href="https://github.com/chaycereed/causalsim" class="external-link">GitHub repository</a></li>
